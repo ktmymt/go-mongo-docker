@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/kotaMiya/go-mongo-docker/app"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	app.Run()
 }
