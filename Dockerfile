@@ -1,6 +1,6 @@
 FROM golang:alpine
 
-RUN apk update && apk add --no-cache git
+RUN apk update && apk add --no-cache git vim
 
 WORKDIR /go/src
 COPY . /go/src
