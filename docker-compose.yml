@@ -1,11 +1,16 @@
 version: "3.7"
 
+volumes:
+  mongodb-volume:
+
 services:
   go:
-    build: .
-    container_name: app
+    build: ./server
+    container_name: go-server
     volumes:
-      - ".:/go/src:cached"
+      - "./server:/go/src:cached"
+    environment:
+      - PORT=8000
     ports:
       - "8000:8000"
     depends_on:
@@ -15,7 +20,7 @@ services:
     image: "mongo:4.2.6-bionic"
     container_name: mongo
     volumes:
-      - ./db:/db
+      - ./mongodb-volume:/data/db
     ports:
       - "27017:27017"
     restart: always
@@ -24,7 +29,7 @@ services:
     image: mongo-express
     container_name: mongo_express
     ports:
-      - "8001:8001"
+      - "8081:8081"
     depends_on:
       - "mongo"
     restart: always
