@@ -2,6 +2,7 @@ version: "3.7"
 
 volumes:
   mongodb-volume:
+    driver: local
 
 services:
   go:
@@ -20,7 +21,7 @@ services:
     image: "mongo:4.2.6-bionic"
     container_name: mongo
     volumes:
-      - ./mongodb-volume:/data/db
+      - mongodb-volume:/data/db
     ports:
       - "27017:27017"
     restart: always
