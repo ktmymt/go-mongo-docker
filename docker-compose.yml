@@ -6,10 +6,11 @@ volumes:
 
 services:
   go:
-    build: ./server
+    build:
+      context: .
     container_name: go-server
     volumes:
-      - "./server:/go/src:cached"
+      - ".:/go/src:cached"
     environment:
       - PORT=8000
     ports:
