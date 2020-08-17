@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go-mongo-docker/configs"
+	"go-mongo-docker/controllers"
 	"go-mongo-docker/domain/repository"
 	"go-mongo-docker/services"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -36,13 +36,15 @@ func main() {
 
 	todoService := services.TodoService(todoRepo)
 
-	fmt.Println(todoRepo, todoService)
+	todoCtl := controllers.NewTodoController(todoService)
 
-	r.GET("/", func(cxt *gin.Context) {
-		cxt.JSON(http.StatusOK, gin.H{
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
 			"message": "Hello world",
 		})
 	})
+
+	r.POST("/todo", todoCtl.PostTodo)
 
 	r.Run()
 }
