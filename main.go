@@ -23,9 +23,7 @@ func main() {
 	}
 
 	config := configs.GetConfig()
-
 	options := options.Client().ApplyURI(config.MongoDB.URI)
-
 	mongodb, err := mongo.Connect(context.Background(), options)
 
 	if err != nil {
@@ -33,9 +31,7 @@ func main() {
 	}
 
 	todoRepo := repository.NewTodoRepository(mongodb)
-
 	todoService := services.TodoService(todoRepo)
-
 	todoCtl := controllers.NewTodoController(todoService)
 
 	r.GET("/", func(ctx *gin.Context) {

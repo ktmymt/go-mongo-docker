@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go-mongo-docker/domain/entity"
 	"go-mongo-docker/services"
+	"net/http"
 )
 
 // TodoOutput structure
@@ -14,8 +15,8 @@ type TodoOutput struct {
 
 // TodoInput structure
 type TodoInput struct {
-	Title       string `json:"title`
-	Description string `json:description"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
 }
 
 // TodoController interface
@@ -35,18 +36,18 @@ func NewTodoController(ts services.TodoService) TodoController {
 func (ctl *todoController) PostTodo(c *gin.Context) {
 	var todoInput TodoInput
 	if err := c.ShouldBindJSON(&todoInput); err != nil {
-		// HTTPRes(c, http.StatusBadRequest, err.Error(), nil)
+		HTTPRes(c, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 	t := ctl.inputToTodo(todoInput)
 
 	if _, err := ctl.ts.CreateTodo(&t); err != nil {
-		// HTTPRes(c, http.StatusInternalServerError, err.Error(), nil)
+		HTTPRes(c, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
-	// todoOutput := ctl.mapToTodoOutput(&t)
-	// HTTPRes(c, http.StatusOK, "Todo saved", todoOutput)
+	todoOutput := ctl.mapToTodoOutput(&t)
+	HTTPRes(c, http.StatusOK, "Todo saved", todoOutput)
 }
 
 func (ctl *todoController) inputToTodo(input TodoInput) entity.Todo {

@@ -15,9 +15,7 @@ type todoService struct {
 }
 
 // NewTodoService return service
-func NewTodoService(
-	repo repository.Repository,
-) TodoService {
+func NewTodoService(repo repository.Repository) TodoService {
 	return &todoService{
 		Repo: repo,
 	}
