@@ -41,7 +41,7 @@ func main() {
 		})
 	})
 
-	r.GET("/todo", func(ctx *gin.Context) {
+	r.GET("/todos", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"title":       "test title",
 			"description": "test description",
