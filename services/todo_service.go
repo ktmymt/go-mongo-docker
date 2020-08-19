@@ -7,7 +7,9 @@ import (
 
 // TodoService interface
 type TodoService interface {
+	GetTodos() ([]*entity.Todo, error)
 	CreateTodo(todo *entity.Todo) (*entity.Todo, error)
+	UpdateTodo(todo *entity.Todo) (*entity.Todo, error)
 }
 
 type todoService struct {
@@ -21,6 +23,14 @@ func NewTodoService(repo repository.Repository) TodoService {
 	}
 }
 
+func (ts *todoService) GetTodos() ([]*entity.Todo, error) {
+	return ts.Repo.GetTodos()
+}
+
 func (ts *todoService) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 	return ts.Repo.CreateTodo(todo)
+}
+
+func (ts *todoService) UpdateTodo(todo *entity.Todo) (*entity.Todo, error) {
+	return ts.Repo.UpdateTodo(todo)
 }

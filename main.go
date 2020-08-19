@@ -23,6 +23,7 @@ func main() {
 		panic(err)
 	}
 
+	// Setup DB
 	config := configs.GetConfig()
 	options := options.Client().ApplyURI(config.MongoDB.URI)
 	mongodb, err := mongo.Connect(context.Background(), options)
@@ -41,13 +42,7 @@ func main() {
 		})
 	})
 
-	r.GET("/todos", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"title":       "test title",
-			"description": "test description",
-		})
-	})
-
+	r.GET("/todos", todoCtl.GetTodos)
 	r.POST("/todo", todoCtl.PostTodo)
 
 	r.Run()

@@ -21,6 +21,7 @@ type TodoInput struct {
 
 // TodoController interface
 type TodoController interface {
+	GetTodos(*gin.Context)
 	PostTodo(*gin.Context)
 }
 
@@ -31,6 +32,16 @@ type todoController struct {
 // NewTodoController returns Todo Controller
 func NewTodoController(ts services.TodoService) TodoController {
 	return &todoController{ts: ts}
+}
+
+func (ctl *todoController) GetTodos(c *gin.Context) {
+	todos, err := ctl.ts.GetTodos()
+
+	if err != nil {
+		panic(err)
+	}
+
+	HTTPRes(c, http.StatusOK, "Get all todos", todos)
 }
 
 func (ctl *todoController) PostTodo(c *gin.Context) {
