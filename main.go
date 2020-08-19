@@ -2,15 +2,16 @@ package main
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"go-mongo-docker/configs"
 	"go-mongo-docker/controllers"
 	"go-mongo-docker/domain/repository"
 	"go-mongo-docker/services"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"net/http"
 )
 
 func main() {
@@ -37,6 +38,13 @@ func main() {
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"message": "Hello world",
+		})
+	})
+
+	r.GET("/todo", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"title":       "test title",
+			"description": "test description",
 		})
 	})
 
