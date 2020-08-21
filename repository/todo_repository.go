@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"go-mongo-docker/domain/entity"
+	"go-mongo-docker/entity"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"

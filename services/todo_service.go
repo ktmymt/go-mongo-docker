@@ -1,8 +1,8 @@
 package services
 
 import (
-	"go-mongo-docker/domain/entity"
-	"go-mongo-docker/domain/repository"
+	"go-mongo-docker/entity"
+	"go-mongo-docker/repository"
 )
 
 // TodoService interface

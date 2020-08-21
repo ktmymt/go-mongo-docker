@@ -4,7 +4,7 @@ import (
 	"context"
 	"go-mongo-docker/configs"
 	"go-mongo-docker/controllers"
-	"go-mongo-docker/domain/repository"
+	"go-mongo-docker/repository"
 	"go-mongo-docker/services"
 	"net/http"
 

@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-mongo-docker/domain/entity"
+	"go-mongo-docker/entity"
 	"go-mongo-docker/services"
 	"net/http"
 )
