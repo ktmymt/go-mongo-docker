@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"go-mongo-docker/entity"
 	"go-mongo-docker/services"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 // TodoOutput structure
