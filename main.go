@@ -8,6 +8,7 @@ import (
 	"go-mongo-docker/services"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,6 +17,10 @@ import (
 
 func main() {
 	r := gin.Default()
+
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"http://localhost:3000"}
+	r.Use(cors.New(corsConfig))
 
 	err := godotenv.Load()
 
@@ -42,8 +47,8 @@ func main() {
 		})
 	})
 
-	r.GET("/todos", todoCtl.GetTodos)
-	r.POST("/todo", todoCtl.PostTodo)
+	r.GET("/api/todos", todoCtl.GetTodos)
+	r.POST("/api/todo", todoCtl.PostTodo)
 
 	r.Run()
 }
