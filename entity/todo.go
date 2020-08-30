@@ -4,4 +4,5 @@ package entity
 type Todo struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	IsDone      bool   `json:"isDone"`
 }
