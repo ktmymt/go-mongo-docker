@@ -37,6 +37,12 @@ func main() {
 		panic(err)
 	}
 
+	// Setup Project controller
+	projectRepo := repository.NewProjectRepository(mongodb)
+	projectserv := services.ProjectService(projectRepo)
+	projcetCont := controllers.NewProjectController(projectserv)
+
+	// Setup TODO controller
 	todoRepo := repository.NewTodoRepository(mongodb)
 	todoService := services.TodoService(todoRepo)
 	todoCtl := controllers.NewTodoController(todoService)
@@ -47,8 +53,12 @@ func main() {
 		})
 	})
 
+	// Setup routers for "TODO"
 	r.GET("/api/todos", todoCtl.GetTodos)
 	r.POST("/api/todo", todoCtl.PostTodo)
+
+	// Setup routers for "Project"
+	r.GET("/api/projects", projcetCont.GetProjects)
 
 	r.Run()
 }
