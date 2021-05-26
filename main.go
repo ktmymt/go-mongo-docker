@@ -60,6 +60,7 @@ func main() {
 	// Setup routers for "Project"
 	r.GET("/api/projects", projcetCont.GetProjects)
 	r.POST("/api/project", projcetCont.PostProject)
+	r.POST("/api/delProject", projcetCont.DeleteProject)
 
 	r.Run()
 }
