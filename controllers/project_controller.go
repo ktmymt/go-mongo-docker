@@ -12,6 +12,7 @@ import (
 type ProjectController interface {
 	GetProjects(*gin.Context)
 	PostProject(*gin.Context)
+	UpdateProject(*gin.Context)
 	DeleteProject(*gin.Context)
 }
 
@@ -50,6 +51,21 @@ func (ctl *projectController) PostProject(ctx *gin.Context) {
 	HTTPRes(ctx, http.StatusOK, "Project saved", &newProject)
 }
 
+func (ctl *projectController) UpdateProject(ctx *gin.Context) {
+	delProject := entity.Project{}
+
+	if err := ctx.ShouldBindJSON(&delProject); err != nil {
+		HTTPRes(ctx, http.StatusBadRequest, err.Error(), nil)
+	}
+
+	if _, err := ctl.ps.UpdateProject(&delProject); err != nil {
+		HTTPRes(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	HTTPRes(ctx, http.StatusOK, "Project updated", &delProject)
+}
+
 func (ctl *projectController) DeleteProject(ctx *gin.Context) {
 	delProject := entity.Project{}
 
@@ -57,7 +73,7 @@ func (ctl *projectController) DeleteProject(ctx *gin.Context) {
 		HTTPRes(ctx, http.StatusBadRequest, err.Error(), nil)
 	}
 
-	if _, err := ctl.ps.CreateProject(&delProject); err != nil {
+	if _, err := ctl.ps.DeleteProject(&delProject); err != nil {
 		HTTPRes(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}

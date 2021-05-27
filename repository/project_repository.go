@@ -14,7 +14,7 @@ import (
 type ProjectRepository interface {
 	GetProjects() ([]*entity.Project, error)
 	CreateProject(*entity.Project) (*entity.Project, error)
-	// UpdateProject(*entity.Project) (*entity.Project, error)
+	UpdateProject(*entity.Project) (*entity.Project, error)
 	DeleteProject(*entity.Project) (*mongo.DeleteResult, error)
 }
 
@@ -61,9 +61,16 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 }
 
 // UpdateProject() updates data of a project.
-// func (p *projectRepository) UpdateProject(project *entity.Project) (*entity.Project, error) {
-// 	//TODO
-// }
+func (p *projectRepository) UpdateProject(project *entity.Project) (*entity.Project, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	collection := p.db.Database("project-db").Collection("projects")
+	_, err := collection.UpdateOne(ctx, bson.M{"_id": project.Id}, *project)
+	avoidPanic(err)
+
+	return project, nil
+}
 
 // DeleteProject() deletes data of a project.
 func (p *projectRepository) DeleteProject(project *entity.Project) (*mongo.DeleteResult, error) {
