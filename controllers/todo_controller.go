@@ -12,6 +12,7 @@ import (
 type TodoController interface {
 	GetTodos(*gin.Context)
 	PostTodo(*gin.Context)
+	UpdateTodo(*gin.Context)
 }
 
 type todoController struct {
@@ -46,4 +47,20 @@ func (ctl *todoController) PostTodo(c *gin.Context) {
 	}
 
 	HTTPRes(c, http.StatusOK, "Todo saved", &newTodo)
+}
+
+func (ctl *todoController) UpdateTodo(c *gin.Context) {
+	updTodo := entity.Todo{}
+
+	if err := c.ShouldBindJSON(&updTodo); err != nil {
+		HTTPRes(c, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	if _, err := ctl.ts.UpdateTodo(&updTodo); err != nil {
+		HTTPRes(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	HTTPRes(c, http.StatusOK, "Todo saved", &updTodo)
 }

@@ -3,16 +3,17 @@ package repository
 import (
 	"context"
 	"go-mongo-docker/entity"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"time"
 )
 
 // Repository functions
 type Repository interface {
 	GetTodos() ([]*entity.Todo, error)
 	CreateTodo(*entity.Todo) (*entity.Todo, error)
-	UpdateTodo(*entity.Todo) (*entity.Todo, error)
+	UpdateTodo(*entity.Todo) (*mongo.UpdateResult, error)
 }
 
 // TodoRepository structure has db
@@ -69,6 +70,17 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 }
 
 // UpdateTodo modify todo data
-func (t *TodoRepository) UpdateTodo(todo *entity.Todo) (*entity.Todo, error) {
-	return todo, nil
+func (t *TodoRepository) UpdateTodo(todo *entity.Todo) (*mongo.UpdateResult, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	collection := t.db.Database("todos-db").Collection("todos")
+
+	filter := bson.M{"title": *&todo.Title}
+	update := bson.M{"$set": bson.M{"isDone": *&todo.IsDone}}
+
+	result, err := collection.UpdateOne(ctx, filter, update)
+	avoidPanic(err)
+
+	return result, nil
 }
