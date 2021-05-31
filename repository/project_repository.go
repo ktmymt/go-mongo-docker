@@ -67,8 +67,8 @@ func (p *projectRepository) UpdateProject(project *entity.Project) (*mongo.Updat
 
 	collection := p.db.Database("projects-db").Collection("projects")
 
-	filter := bson.M{"name": "test project 2"}
-	update := bson.M{"$set": bson.M{"description": "test post 2 2 2"}}
+	filter := bson.M{"name": *&project.Name}
+	update := bson.M{"$set": bson.M{"description": *&project.Description}}
 
 	result, err := collection.UpdateOne(ctx, filter, update)
 	avoidPanic(err)
