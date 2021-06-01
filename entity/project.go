@@ -7,6 +7,6 @@ type Project struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Todos       []Todo `json:"todos"`
-	Color       int    `json:"color"`
+	Color       string `json:"color"`
 	// UpdatedAt   ???   `json:"updatedAt"`
 }
