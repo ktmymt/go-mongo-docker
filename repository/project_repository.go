@@ -72,7 +72,13 @@ func (p *projectRepository) UpdateProject(project *entity.Project, stringId stri
 	avoidPanic(err)
 
 	filter := bson.M{"id": id}
-	update := bson.M{"$set": bson.M{"description": *&project.Description}}
+	update := bson.M{
+		"$set": bson.M{
+			"name":        *&project.Name,
+			"description": *&project.Description,
+			"todos":       *&project.Todos,
+			"color":       *&project.Color,
+		}}
 
 	result, err := collection.UpdateOne(ctx, filter, update)
 	avoidPanic(err)
