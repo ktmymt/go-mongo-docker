@@ -59,7 +59,9 @@ func (ctl *projectController) UpdateProject(ctx *gin.Context) {
 		return
 	}
 
-	if _, err := ctl.ps.UpdateProject(&updProject); err != nil {
+	id := ctx.Param("id")
+
+	if _, err := ctl.ps.UpdateProject(&updProject, id); err != nil {
 		HTTPRes(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}

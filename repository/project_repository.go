@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-mongo-docker/entity"
 	"log"
+	"strconv"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,7 +15,7 @@ import (
 type ProjectRepository interface {
 	GetProjects() ([]*entity.Project, error)
 	CreateProject(*entity.Project) (*entity.Project, error)
-	UpdateProject(*entity.Project) (*mongo.UpdateResult, error)
+	UpdateProject(*entity.Project, string) (*mongo.UpdateResult, error)
 	// DeleteProject(*entity.Project) (*mongo.DeleteResult, error)
 }
 
@@ -61,13 +62,16 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 }
 
 // UpdateProject() updates data of a project.
-func (p *projectRepository) UpdateProject(project *entity.Project) (*mongo.UpdateResult, error) {
+func (p *projectRepository) UpdateProject(project *entity.Project, stringId string) (*mongo.UpdateResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	collection := p.db.Database("projects-db").Collection("projects")
 
-	filter := bson.M{"name": *&project.Name}
+	id, err := strconv.Atoi(stringId)
+	avoidPanic(err)
+
+	filter := bson.M{"id": id}
 	update := bson.M{"$set": bson.M{"description": *&project.Description}}
 
 	result, err := collection.UpdateOne(ctx, filter, update)
