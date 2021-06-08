@@ -13,7 +13,7 @@ import (
 type Repository interface {
 	GetTodos() ([]*entity.Todo, error)
 	CreateTodo(*entity.Todo) (*entity.Todo, error)
-	UpdateTodo(*entity.Todo) (*mongo.UpdateResult, error)
+	UpdateTodo(*entity.Todo, string) (*mongo.UpdateResult, error)
 }
 
 // TodoRepository structure has db
@@ -70,14 +70,20 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 }
 
 // UpdateTodo modify todo data
-func (t *TodoRepository) UpdateTodo(todo *entity.Todo) (*mongo.UpdateResult, error) {
+func (t *TodoRepository) UpdateTodo(todo *entity.Todo, id string) (*mongo.UpdateResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	collection := t.db.Database("todos-db").Collection("todos")
 
-	filter := bson.M{"title": *&todo.Title}
-	update := bson.M{"$set": bson.M{"isDone": *&todo.IsDone}}
+	filter := bson.M{"id": convertToInt(id)}
+	update := bson.M{
+		"$set": bson.M{
+			"title":    *&todo.Title,
+			"isDone":   *&todo.IsDone,
+			"status":   *&todo.Status,
+			"schedule": *&todo.Schedule,
+		}}
 
 	result, err := collection.UpdateOne(ctx, filter, update)
 	avoidPanic(err)

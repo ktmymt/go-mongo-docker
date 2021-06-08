@@ -57,7 +57,7 @@ func (ctl *todoController) UpdateTodo(c *gin.Context) {
 		return
 	}
 
-	if _, err := ctl.ts.UpdateTodo(&updTodo); err != nil {
+	if _, err := ctl.ts.UpdateTodo(&updTodo, c.Param("id")); err != nil {
 		HTTPRes(c, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}

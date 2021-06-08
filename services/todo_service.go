@@ -11,7 +11,8 @@ import (
 type TodoService interface {
 	GetTodos() ([]*entity.Todo, error)
 	CreateTodo(todo *entity.Todo) (*entity.Todo, error)
-	UpdateTodo(todo *entity.Todo) (*mongo.UpdateResult, error)
+	UpdateTodo(todo *entity.Todo, id string) (*mongo.UpdateResult, error)
+	//TODO -> Deletion function for "TODO"
 }
 
 type todoService struct {
@@ -33,6 +34,6 @@ func (ts *todoService) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 	return ts.Repo.CreateTodo(todo)
 }
 
-func (ts *todoService) UpdateTodo(todo *entity.Todo) (*mongo.UpdateResult, error) {
-	return ts.Repo.UpdateTodo(todo)
+func (ts *todoService) UpdateTodo(todo *entity.Todo, id string) (*mongo.UpdateResult, error) {
+	return ts.Repo.UpdateTodo(todo, id)
 }
