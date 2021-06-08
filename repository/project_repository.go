@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"go-mongo-docker/entity"
-	"log"
 	"strconv"
 	"time"
 
@@ -62,16 +61,13 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 }
 
 // UpdateProject() updates data of a project.
-func (p *projectRepository) UpdateProject(project *entity.Project, stringId string) (*mongo.UpdateResult, error) {
+func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*mongo.UpdateResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	collection := p.db.Database("projects-db").Collection("projects")
 
-	id, err := strconv.Atoi(stringId)
-	avoidPanic(err)
-
-	filter := bson.M{"id": id}
+	filter := bson.M{"id": convertToInt(id)}
 	update := bson.M{
 		"$set": bson.M{
 			"name":        *&project.Name,
@@ -106,9 +102,10 @@ func avoidPanic(err error) {
 	}
 }
 
-// avoidDeleteZero() terminates the program if "DeleteCount" is equal to 0
-func avoidDeleteZero(result *mongo.DeleteResult) {
-	if result.DeletedCount == 0 {
-		log.Fatal()
-	}
+// convertToInt() converts string datum into int datum
+func convertToInt(datum string) int {
+	convertedDatum, err := strconv.Atoi(datum)
+	avoidPanic(err)
+
+	return convertedDatum
 }
