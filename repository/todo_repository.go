@@ -90,3 +90,17 @@ func (t *TodoRepository) UpdateTodo(todo *entity.Todo, id string) (*mongo.Update
 
 	return result, nil
 }
+
+// DeleteTodo() deletes TODO data
+func (t *TodoRepository) DeleteTodo(todo *entity.Todo, id string) (*mongo.DeleteResult, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	collection := t.db.Database("todos-db").Collection("todos")
+
+	filter := bson.M{"id": convertToInt(id)}
+	result, err := collection.DeleteOne(ctx, filter)
+	avoidPanic(err)
+
+	return result, nil
+}
