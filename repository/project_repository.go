@@ -83,17 +83,18 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 }
 
 // DeleteProject() deletes data of a project.
-// func (p *projectRepository) DeleteProject(project *entity.Project) (*mongo.DeleteResult, error) {
-// 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-// 	defer cancel()
+func (p *projectRepository) DeleteProject(project *entity.Project, id string) (*mongo.DeleteResult, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
-// 	collection := p.db.Database("projects-db").Collection("projects")
-// 	result, err := collection.DeleteOne(ctx, bson.M{"name": project.Name})
-// 	avoidPanic(err)
-// 	avoidDeleteZero(result)
+	collection := p.db.Database("projects-db").Collection("projects")
 
-// 	return result, nil
-// }
+	filter := bson.M{"id": convertToInt(id)}
+	result, err := collection.DeleteOne(ctx, filter)
+	avoidPanic(err)
+
+	return result, nil
+}
 
 // avoidPanic() catches an error and terminates the program.
 func avoidPanic(err error) {
