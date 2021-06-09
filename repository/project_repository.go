@@ -15,7 +15,7 @@ type ProjectRepository interface {
 	GetProjects() ([]*entity.Project, error)
 	CreateProject(*entity.Project) (*entity.Project, error)
 	UpdateProject(*entity.Project, string) (*mongo.UpdateResult, error)
-	// DeleteProject(*entity.Project) (*mongo.DeleteResult, error)
+	DeleteProject(*entity.Project, string) (*mongo.DeleteResult, error)
 }
 
 // Project repository structure has db
