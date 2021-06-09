@@ -14,6 +14,7 @@ type Repository interface {
 	GetTodos() ([]*entity.Todo, error)
 	CreateTodo(*entity.Todo) (*entity.Todo, error)
 	UpdateTodo(*entity.Todo, string) (*mongo.UpdateResult, error)
+	DeleteTodo(*entity.Todo, string) (*mongo.DeleteResult, error)
 }
 
 // TodoRepository structure has db
