@@ -32,10 +32,7 @@ func NewTodoRepository(db *mongo.Client) Repository {
 func (t *TodoRepository) GetTodos() ([]*entity.Todo, error) {
 	collection := t.db.Database("todos-db").Collection("todos")
 	cur, err := collection.Find(context.Background(), bson.D{})
-
-	if err != nil {
-		panic(err)
-	}
+	avoidPanic(err)
 
 	var results []*entity.Todo
 
@@ -43,11 +40,7 @@ func (t *TodoRepository) GetTodos() ([]*entity.Todo, error) {
 		// create a value into which the single document can be decoded
 		var elem *entity.Todo
 		err := cur.Decode(&elem)
-
-		if err != nil {
-			panic(err)
-		}
-
+		avoidPanic(err)
 		results = append(results, elem)
 	}
 
@@ -61,10 +54,7 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 
 	collection := t.db.Database("todos-db").Collection("todos")
 	_, err := collection.InsertOne(ctx, *todo)
-
-	if err != nil {
-		panic(err)
-	}
+	avoidPanic(err)
 
 	return todo, nil
 }
