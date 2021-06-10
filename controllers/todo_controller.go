@@ -64,8 +64,13 @@ func (ctl *todoController) UpdateTodo(c *gin.Context) {
 		}
 	}
 
-	if _, err := ctl.ts.UpdateTodo(&updTodo, c.Param("id")); err != nil {
+	result, err := ctl.ts.UpdateTodo(&updTodo, c.Param("id"))
+
+	if err != nil {
 		HTTPRes(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	} else if result.ModifiedCount == 0 {
+		HTTPRes(c, http.StatusBadRequest, "Update error: Zero Todo modified", nil)
 		return
 	}
 
