@@ -13,8 +13,8 @@ import (
 type ProjectRepository interface {
 	GetProjects() ([]*entity.Project, error)
 	CreateProject(*entity.Project) (*entity.Project, error)
-	// UpdateProject(*entity.Project) (*entity.Project, error)
-	// DeleteProject(*entity.Project) (*entity.Project, error)
+	UpdateProject(*entity.Project, string) (*mongo.UpdateResult, error)
+	// DeleteProject(*entity.Project) (*mongo.DeleteResult, error)
 }
 
 // Project repository structure has db
@@ -60,18 +60,36 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 }
 
 // UpdateProject() updates data of a project.
-// func (p *projectRepository) UpdateProject(project *entity.Project) (*entity.Project, error) {
-// 	//TODO
-// }
+func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*mongo.UpdateResult, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	collection := p.db.Database("projects-db").Collection("projects")
+
+	filter := bson.M{"id": convertToInt(id)}
+	update := bson.M{
+		"$set": bson.M{
+			"name":        *&project.Name,
+			"description": *&project.Description,
+			"todos":       *&project.Todos,
+			"color":       *&project.Color,
+		}}
+
+	result, err := collection.UpdateOne(ctx, filter, update)
+	avoidPanic(err)
+
+	return result, nil
+}
 
 // DeleteProject() deletes data of a project.
-// func (p *projectRepository) DeleteProject(project *entity.Project) (*entity.Project, error) {
-// 	//TODO
-// }
+// func (p *projectRepository) DeleteProject(project *entity.Project) (*mongo.DeleteResult, error) {
+// 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+// 	defer cancel()
 
-// avoidPanic() catches an error and terminates the program.
-func avoidPanic(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+// 	collection := p.db.Database("projects-db").Collection("projects")
+// 	result, err := collection.DeleteOne(ctx, bson.M{"name": project.Name})
+// 	avoidPanic(err)
+// 	avoidDeleteZero(result)
+
+// 	return result, nil
+// }

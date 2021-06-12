@@ -37,7 +37,7 @@ func main() {
 		panic(err)
 	}
 
-	// Setup Project controller
+	// Setup PROJECT controller
 	projectRepo := repository.NewProjectRepository(mongodb)
 	projectserv := services.ProjectService(projectRepo)
 	projcetCont := controllers.NewProjectController(projectserv)
@@ -56,10 +56,14 @@ func main() {
 	// Setup routers for "TODO"
 	r.GET("/api/todos", todoCtl.GetTodos)
 	r.POST("/api/todo", todoCtl.PostTodo)
+	r.PUT("/api/updTodo/:id", todoCtl.UpdateTodo)
+	//r.DELETE() <- TODO
 
 	// Setup routers for "Project"
 	r.GET("/api/projects", projcetCont.GetProjects)
 	r.POST("/api/project", projcetCont.PostProject)
+	r.PUT("/api/updProject/:id", projcetCont.UpdateProject)
+	// r.DELETE("/api/delProject", projcetCont.DeleteProject)
 
 	r.Run()
 }

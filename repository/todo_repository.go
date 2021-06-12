@@ -3,16 +3,17 @@ package repository
 import (
 	"context"
 	"go-mongo-docker/entity"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"time"
 )
 
 // Repository functions
 type Repository interface {
 	GetTodos() ([]*entity.Todo, error)
 	CreateTodo(*entity.Todo) (*entity.Todo, error)
-	UpdateTodo(*entity.Todo) (*entity.Todo, error)
+	UpdateTodo(*entity.Todo, string) (*mongo.UpdateResult, error)
 }
 
 // TodoRepository structure has db
@@ -31,10 +32,7 @@ func NewTodoRepository(db *mongo.Client) Repository {
 func (t *TodoRepository) GetTodos() ([]*entity.Todo, error) {
 	collection := t.db.Database("todos-db").Collection("todos")
 	cur, err := collection.Find(context.Background(), bson.D{})
-
-	if err != nil {
-		panic(err)
-	}
+	avoidPanic(err)
 
 	var results []*entity.Todo
 
@@ -42,11 +40,7 @@ func (t *TodoRepository) GetTodos() ([]*entity.Todo, error) {
 		// create a value into which the single document can be decoded
 		var elem *entity.Todo
 		err := cur.Decode(&elem)
-
-		if err != nil {
-			panic(err)
-		}
-
+		avoidPanic(err)
 		results = append(results, elem)
 	}
 
@@ -60,15 +54,29 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 
 	collection := t.db.Database("todos-db").Collection("todos")
 	_, err := collection.InsertOne(ctx, *todo)
-
-	if err != nil {
-		panic(err)
-	}
+	avoidPanic(err)
 
 	return todo, nil
 }
 
 // UpdateTodo modify todo data
-func (t *TodoRepository) UpdateTodo(todo *entity.Todo) (*entity.Todo, error) {
-	return todo, nil
+func (t *TodoRepository) UpdateTodo(todo *entity.Todo, id string) (*mongo.UpdateResult, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	collection := t.db.Database("todos-db").Collection("todos")
+
+	filter := bson.M{"id": convertToInt(id)}
+	update := bson.M{
+		"$set": bson.M{
+			"title":    *&todo.Title,
+			"isDone":   *&todo.IsDone,
+			"status":   *&todo.Status,
+			"schedule": *&todo.Schedule,
+		}}
+
+	result, err := collection.UpdateOne(ctx, filter, update)
+	avoidPanic(err)
+
+	return result, nil
 }
