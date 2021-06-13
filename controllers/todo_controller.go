@@ -26,16 +26,14 @@ func NewTodoController(ts services.TodoService) TodoController {
 
 func (ctl *todoController) GetTodos(c *gin.Context) {
 	todos, err := ctl.ts.GetTodos()
-
-	if err != nil {
-		panic(err)
-	}
+	AvoidPanic(err)
 
 	HTTPRes(c, http.StatusOK, "Get all todos", todos)
 }
 
 func (ctl *todoController) PostTodo(c *gin.Context) {
 	newTodo := entity.Todo{}
+
 	if err := c.ShouldBindJSON(&newTodo); err != nil {
 		HTTPRes(c, http.StatusBadRequest, err.Error(), nil)
 		return
