@@ -73,6 +73,7 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 			"description": *&project.Description,
 			"todos":       *&project.Todos,
 			"color":       *&project.Color,
+			"updatedAt":   *&project.UpdatedAt,
 		}}
 
 	result, err := collection.UpdateOne(ctx, filter, update)
