@@ -33,6 +33,11 @@ func NewProjectRepository(db *mongo.Client) ProjectRepository {
 func (p *projectRepository) GetProjects() ([]*entity.Project, error) {
 	collection := p.db.Database("projects-db").Collection("projects")
 	cur, err := collection.Find(context.Background(), bson.D{})
+
+	//https://www.tutorialspoint.com/how-to-order-by-timestamp-descending-order-in-mongodb
+	// filter := options.Find()
+	// filter.SetSort(bson.D{{Key: "updatedAt", Value: 1}})
+	// cur, err := collection.Find(context.Background(), bson.D{}, filter)
 	avoidPanic(err)
 
 	var results []*entity.Project
@@ -53,6 +58,8 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 	defer cancel()
 
 	collection := p.db.Database("projects-db").Collection("projects")
+
+	*&project.UpdatedAt = time.Now()
 	_, err := collection.InsertOne(ctx, *project)
 	avoidPanic(err)
 
@@ -73,7 +80,7 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 			"description": *&project.Description,
 			"todos":       *&project.Todos,
 			"color":       *&project.Color,
-			"updatedAt":   *&project.UpdatedAt,
+			"updatedAt":   time.Now(),
 		}}
 
 	result, err := collection.UpdateOne(ctx, filter, update)
