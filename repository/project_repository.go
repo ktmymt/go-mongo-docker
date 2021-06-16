@@ -7,6 +7,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Project repository functions
@@ -32,12 +33,10 @@ func NewProjectRepository(db *mongo.Client) ProjectRepository {
 // GetProjects() returns all projects.
 func (p *projectRepository) GetProjects() ([]*entity.Project, error) {
 	collection := p.db.Database("projects-db").Collection("projects")
-	cur, err := collection.Find(context.Background(), bson.D{})
 
-	//https://www.tutorialspoint.com/how-to-order-by-timestamp-descending-order-in-mongodb
-	// filter := options.Find()
-	// filter.SetSort(bson.D{{Key: "updatedAt", Value: 1}})
-	// cur, err := collection.Find(context.Background(), bson.D{}, filter)
+	filter := options.Find()
+	filter.SetSort(bson.D{{Key: "updatedAt", Value: -1}})
+	cur, err := collection.Find(context.Background(), bson.D{}, filter)
 	avoidPanic(err)
 
 	var results []*entity.Project
