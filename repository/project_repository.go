@@ -58,8 +58,15 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 
 	collection := p.db.Database("projects-db").Collection("projects")
 
-	*&project.UpdatedAt = time.Now()
-	_, err := collection.InsertOne(ctx, *project)
+	insert := bson.D{
+		{Key: "id", Value: project.Id},
+		{Key: "name", Value: project.Name},
+		{Key: "description", Value: project.Description},
+		{Key: "todos", Value: project.Todos},
+		{Key: "color", Value: project.Color},
+		{Key: "updatedAt", Value: time.Now()},
+	}
+	_, err := collection.InsertOne(ctx, insert)
 	avoidPanic(err)
 
 	return project, nil
@@ -75,10 +82,10 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 	filter := bson.M{"id": convertToInt(id)}
 	update := bson.M{
 		"$set": bson.M{
-			"name":        *&project.Name,
-			"description": *&project.Description,
-			"todos":       *&project.Todos,
-			"color":       *&project.Color,
+			"name":        project.Name,
+			"description": project.Description,
+			"todos":       project.Todos,
+			"color":       project.Color,
 			"updatedAt":   time.Now(),
 		}}
 
