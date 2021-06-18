@@ -57,10 +57,32 @@ func (ctl *todoController) UpdateTodo(c *gin.Context) {
 		return
 	}
 
-	if _, err := ctl.ts.UpdateTodo(&updTodo, c.Param("id")); err != nil {
+	if err := c.ShouldBind(&updTodo); err == nil {
+		if !areParamsValid(updTodo) {
+			HTTPRes(c, http.StatusBadRequest, "Param invalid", nil)
+			return
+		}
+	}
+
+	result, err := ctl.ts.UpdateTodo(&updTodo, c.Param("id"))
+
+	if err != nil {
 		HTTPRes(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	} else if result.ModifiedCount == 0 {
+		HTTPRes(c, http.StatusBadRequest, "Update error: Zero Todo modified", nil)
 		return
 	}
 
 	HTTPRes(c, http.StatusOK, "Todo saved", &updTodo)
+}
+
+func areParamsValid(params entity.Todo) bool {
+	paramsValid := true
+
+	if params.Id <= 0 || params.Title == "" || params.Status == "" || params.Schedule < 0 {
+		paramsValid = false
+	}
+
+	return paramsValid
 }
