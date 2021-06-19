@@ -30,7 +30,7 @@ func NewProjectController(ps services.ProjectService) ProjectController {
 
 func (ctl *projectController) GetProjects(ctx *gin.Context) {
 	projects, err := ctl.ps.GetProjects()
-	avoidPanic(err)
+	AvoidPanic(err)
 
 	HTTPRes(ctx, http.StatusOK, "get project test -> ok", projects)
 }
@@ -81,11 +81,4 @@ func (ctl *projectController) DeleteProject(ctx *gin.Context) {
 
 	HTTPRes(ctx, http.StatusOK, "Project deleted", &delProject)
 
-}
-
-// avoidPanic() catches an error and terminates the program.
-func avoidPanic(err error) {
-	if err != nil {
-		panic(err)
-	}
 }

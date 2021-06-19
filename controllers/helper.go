@@ -20,3 +20,10 @@ func HTTPRes(c *gin.Context, httpCode int, message string, data interface{}) {
 	})
 	return
 }
+
+// avoidPanic() catches an error and terminates the program.
+func AvoidPanic(err error) {
+	if err != nil {
+		panic(err)
+	}
+}

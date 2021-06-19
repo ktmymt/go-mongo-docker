@@ -7,6 +7,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Project repository functions
@@ -32,7 +33,10 @@ func NewProjectRepository(db *mongo.Client) ProjectRepository {
 // GetProjects() returns all projects.
 func (p *projectRepository) GetProjects() ([]*entity.Project, error) {
 	collection := p.db.Database("projects-db").Collection("projects")
-	cur, err := collection.Find(context.Background(), bson.D{})
+
+	filter := options.Find()
+	filter.SetSort(bson.D{{Key: "updatedAt", Value: -1}})
+	cur, err := collection.Find(context.Background(), bson.D{}, filter)
 	avoidPanic(err)
 
 	var results []*entity.Project
@@ -53,7 +57,16 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 	defer cancel()
 
 	collection := p.db.Database("projects-db").Collection("projects")
-	_, err := collection.InsertOne(ctx, *project)
+
+	insert := bson.D{
+		{Key: "id", Value: project.Id},
+		{Key: "name", Value: project.Name},
+		{Key: "description", Value: project.Description},
+		{Key: "todos", Value: project.Todos},
+		{Key: "color", Value: project.Color},
+		{Key: "updatedAt", Value: time.Now()},
+	}
+	_, err := collection.InsertOne(ctx, insert)
 	avoidPanic(err)
 
 	return project, nil
@@ -69,10 +82,11 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 	filter := bson.M{"id": convertToInt(id)}
 	update := bson.M{
 		"$set": bson.M{
-			"name":        *&project.Name,
-			"description": *&project.Description,
-			"todos":       *&project.Todos,
-			"color":       *&project.Color,
+			"name":        project.Name,
+			"description": project.Description,
+			"todos":       project.Todos,
+			"color":       project.Color,
+			"updatedAt":   time.Now(),
 		}}
 
 	result, err := collection.UpdateOne(ctx, filter, update)

@@ -69,10 +69,10 @@ func (t *TodoRepository) UpdateTodo(todo *entity.Todo, id string) (*mongo.Update
 	filter := bson.M{"id": convertToInt(id)}
 	update := bson.M{
 		"$set": bson.M{
-			"title":    *&todo.Title,
-			"isDone":   *&todo.IsDone,
-			"status":   *&todo.Status,
-			"schedule": *&todo.Schedule,
+			"title":    todo.Title,
+			"isDone":   todo.IsDone,
+			"status":   todo.Status,
+			"schedule": todo.Schedule,
 		}}
 
 	result, err := collection.UpdateOne(ctx, filter, update)
