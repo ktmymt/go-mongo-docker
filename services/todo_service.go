@@ -12,7 +12,6 @@ type TodoService interface {
 	GetTodos() ([]*entity.Todo, error)
 	CreateTodo(todo *entity.Todo) (*entity.Todo, error)
 	UpdateTodo(todo *entity.Todo, id string) (*mongo.UpdateResult, error)
-	//TODO -> Deletion function for "TODO"
 }
 
 type todoService struct {

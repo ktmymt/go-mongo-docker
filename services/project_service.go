@@ -12,7 +12,6 @@ type ProjectService interface {
 	GetProjects() ([]*entity.Project, error)
 	CreateProject(project *entity.Project) (*entity.Project, error)
 	UpdateProject(project *entity.Project, id string) (*mongo.UpdateResult, error)
-	// DeleteProject(project *entity.Project) (*mongo.DeleteResult, error)
 }
 
 // Project service structure
@@ -38,7 +37,3 @@ func (ps *projectService) CreateProject(project *entity.Project) (*entity.Projec
 func (ps *projectService) UpdateProject(project *entity.Project, id string) (*mongo.UpdateResult, error) {
 	return ps.ProjectRepo.UpdateProject(project, id)
 }
-
-// func (ps *projectService) DeleteProject(project *entity.Project) (*mongo.DeleteResult, error) {
-// 	return ps.ProjectRepo.DeleteProject(project)
-// }
