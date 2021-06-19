@@ -63,7 +63,7 @@ func main() {
 	r.GET("/api/projects", projcetCont.GetProjects)
 	r.POST("/api/project", projcetCont.PostProject)
 	r.PUT("/api/updProject/:id", projcetCont.UpdateProject)
-	// r.DELETE("/api/delProject", projcetCont.DeleteProject)
+	r.DELETE("/api/delProject/:id", projcetCont.DeleteProject)
 
 	r.Run()
 }
