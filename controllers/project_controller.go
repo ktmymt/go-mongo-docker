@@ -43,6 +43,11 @@ func (ctl *projectController) PostProject(ctx *gin.Context) {
 		return
 	}
 
+	if err := ctl.ps.ValidateLength(&newProject); len(err) > 0 {
+		HTTPRes(ctx, http.StatusBadRequest, err, nil)
+		return
+	}
+
 	if _, err := ctl.ps.CreateProject(&newProject); err != nil {
 		HTTPRes(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
@@ -56,6 +61,11 @@ func (ctl *projectController) UpdateProject(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&updProject); err != nil {
 		HTTPRes(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	if err := ctl.ps.ValidateLength(&updProject); len(err) > 0 {
+		HTTPRes(ctx, http.StatusBadRequest, err, nil)
 		return
 	}
 

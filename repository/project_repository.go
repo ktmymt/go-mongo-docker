@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"go-mongo-docker/entity"
+	"strconv"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,6 +17,7 @@ type ProjectRepository interface {
 	CreateProject(*entity.Project) (*entity.Project, error)
 	UpdateProject(*entity.Project, string) (*mongo.UpdateResult, error)
 	DeleteProject(*entity.Project, string) (*mongo.DeleteResult, error)
+	ValidateLength(*entity.Project) string
 }
 
 // Project repository structure has db
@@ -107,4 +109,21 @@ func (p *projectRepository) DeleteProject(project *entity.Project, id string) (*
 	avoidPanic(err)
 
 	return result, nil
+}
+
+func (p *projectRepository) ValidateLength(project *entity.Project) string {
+	var errorMessage string
+
+	maxProjectNameLength := 14
+	maxProjectDescriptionLength := 128
+
+	if len(project.Name) > maxProjectNameLength {
+		errorMessage += "The project name must be less than " + strconv.Itoa(maxProjectNameLength) + " characters;"
+	}
+
+	if len(project.Description) > maxProjectDescriptionLength {
+		errorMessage += "The project description must be less than " + strconv.Itoa(maxProjectDescriptionLength) + " characters;"
+	}
+
+	return errorMessage
 }
