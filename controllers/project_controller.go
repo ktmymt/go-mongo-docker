@@ -13,7 +13,7 @@ type ProjectController interface {
 	GetProjects(*gin.Context)
 	PostProject(*gin.Context)
 	UpdateProject(*gin.Context)
-	// DeleteProject(*gin.Context)
+	DeleteProject(*gin.Context)
 }
 
 //
@@ -67,18 +67,18 @@ func (ctl *projectController) UpdateProject(ctx *gin.Context) {
 	HTTPRes(ctx, http.StatusOK, "Project updated", &updProject)
 }
 
-// func (ctl *projectController) DeleteProject(ctx *gin.Context) {
-// 	delProject := entity.Project{}
+func (ctl *projectController) DeleteProject(ctx *gin.Context) {
+	delProject := entity.Project{}
 
-// 	if err := ctx.ShouldBindJSON(&delProject); err != nil {
-// 		HTTPRes(ctx, http.StatusBadRequest, err.Error(), nil)
-// 	}
+	if err := ctx.ShouldBindJSON(&delProject); err != nil {
+		HTTPRes(ctx, http.StatusBadRequest, err.Error(), nil)
+	}
 
-// 	if _, err := ctl.ps.DeleteProject(&delProject); err != nil {
-// 		HTTPRes(ctx, http.StatusInternalServerError, err.Error(), nil)
-// 		return
-// 	}
+	if _, err := ctl.ps.DeleteProject(&delProject, ctx.Param("id")); err != nil {
+		HTTPRes(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
 
-// 	HTTPRes(ctx, http.StatusOK, "Project deleted", &delProject)
+	HTTPRes(ctx, http.StatusOK, "Project deleted", &delProject)
 
-// }
+}
