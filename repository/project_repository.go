@@ -71,7 +71,6 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 		"$set": bson.M{
 			"name":        *&project.Name,
 			"description": *&project.Description,
-			"todos":       *&project.Todos,
 			"color":       *&project.Color,
 		}}
 
