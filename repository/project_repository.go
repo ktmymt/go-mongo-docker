@@ -58,6 +58,14 @@ func (p *projectRepository) GetProjects() ([]*entity.Project, error) {
 		todos = append(todos, todo)
 	}
 
+	for _, project := range projects {
+		for _, todo := range todos {
+			if project.Id == todo.ProjectId {
+				project.Todos = append(project.Todos, *todo)
+			}
+		}
+	}
+
 	return projects, nil
 }
 
