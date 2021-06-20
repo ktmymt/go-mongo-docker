@@ -10,9 +10,10 @@ package entity
  * etc...
  */
 type Todo struct {
-	Id       int    `json:"id"`
-	Title    string `json:"title"`
-	IsDone   bool   `json:"isDone"`
-	Status   string `json:"status"`
-	Schedule int    `json:"schedule"`
+	Id        int    `json:"id"`
+	ProjectId int    `json:"projectId"`
+	Title     string `json:"title"`
+	IsDone    bool   `json:"isDone"`
+	Status    string `json:"status"`
+	Schedule  int    `json:"schedule"`
 }
