@@ -16,19 +16,26 @@ type Project struct {
 	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
-func (project *Project) ValidateLength(errors Errors, errorMessage ErrorMessage) Errors {
-	maxProjectNameLength := 14
+func (project *Project) Validation(errors Errors, errorMessage ErrorMessage) Errors {
+	minProjectNameLength := 2
+	maxProjectNameLength := 13
 	maxProjectDescriptionLength := 128
 
-	if len(project.Name) > maxProjectNameLength {
+	if len(project.Name) > maxProjectNameLength || len(project.Name) < minProjectNameLength {
 		errorMessage.Name = "projectName"
-		errorMessage.Message = "The project name must be less than " + strconv.Itoa(maxProjectNameLength) + " characters"
+		errorMessage.Message = "Project name must be between " + strconv.Itoa(minProjectNameLength) + "-" + strconv.Itoa(maxProjectNameLength) + " characters"
 		errors.Errors = append(errors.Errors, errorMessage)
 	}
 
 	if len(project.Description) > maxProjectDescriptionLength {
-		errorMessage.Name = "ProjectDescription"
-		errorMessage.Message = "The project description must be less than " + strconv.Itoa(maxProjectDescriptionLength) + " characters"
+		errorMessage.Name = "projectDescription"
+		errorMessage.Message = "Project description must be less than " + strconv.Itoa(maxProjectDescriptionLength) + " characters"
+		errors.Errors = append(errors.Errors, errorMessage)
+	}
+
+	if project.Color == "" {
+		errorMessage.Name = "projectColor"
+		errorMessage.Message = "Please select your project color"
 		errors.Errors = append(errors.Errors, errorMessage)
 	}
 
