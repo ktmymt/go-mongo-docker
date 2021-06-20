@@ -78,7 +78,7 @@ func (ctl *todoController) UpdateTodo(c *gin.Context) {
 func areParamsValid(params entity.Todo) bool {
 	paramsValid := true
 
-	if params.Id <= 0 || params.Title == "" || params.Status == "" || params.Schedule < 0 {
+	if params.Title == "" || params.Status == "" || params.Schedule < 0 {
 		paramsValid = false
 	}
 
