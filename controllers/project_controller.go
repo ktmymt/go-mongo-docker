@@ -44,7 +44,7 @@ func (ctl *projectController) PostProject(ctx *gin.Context) {
 		return
 	}
 
-	if err := newProject.ValidateLength(errors, errorMessage); len(err.Errors) > 0 {
+	if err := newProject.Validation(errors, errorMessage); len(err.Errors) > 0 {
 		HTTPRes(ctx, http.StatusBadRequest, "Validation Error", err.Errors)
 		return
 	}
@@ -67,7 +67,7 @@ func (ctl *projectController) UpdateProject(ctx *gin.Context) {
 		return
 	}
 
-	if err := updProject.ValidateLength(errors, errorMessage); len(err.Errors) > 0 {
+	if err := updProject.Validation(errors, errorMessage); len(err.Errors) > 0 {
 		HTTPRes(ctx, http.StatusBadRequest, "Validation Error", err.Errors)
 		return
 	}
