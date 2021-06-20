@@ -1,11 +1,10 @@
 package controllers
 
 import (
+	"github.com/gin-gonic/gin"
 	"go-mongo-docker/entity"
 	"go-mongo-docker/services"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 //
@@ -37,9 +36,16 @@ func (ctl *projectController) GetProjects(ctx *gin.Context) {
 
 func (ctl *projectController) PostProject(ctx *gin.Context) {
 	newProject := entity.Project{}
+	errors := entity.Errors{}
+	errorMessage := entity.ErrorMessage{}
 
 	if err := ctx.ShouldBindJSON(&newProject); err != nil {
 		HTTPRes(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	if err := newProject.ValidateLength(errors, errorMessage); len(err.Errors) > 0 {
+		HTTPRes(ctx, http.StatusBadRequest, "Validation Error", err.Errors)
 		return
 	}
 
@@ -53,9 +59,16 @@ func (ctl *projectController) PostProject(ctx *gin.Context) {
 
 func (ctl *projectController) UpdateProject(ctx *gin.Context) {
 	updProject := entity.Project{}
+	errors := entity.Errors{}
+	errorMessage := entity.ErrorMessage{}
 
 	if err := ctx.ShouldBindJSON(&updProject); err != nil {
 		HTTPRes(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	if err := updProject.ValidateLength(errors, errorMessage); len(err.Errors) > 0 {
+		HTTPRes(ctx, http.StatusBadRequest, "Validation Error", err.Errors)
 		return
 	}
 
