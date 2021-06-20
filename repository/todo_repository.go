@@ -11,7 +11,6 @@ import (
 
 // Repository functions
 type Repository interface {
-	GetTodos() ([]*entity.Todo, error)
 	CreateTodo(*entity.Todo) (*entity.Todo, error)
 	UpdateTodo(*entity.Todo, string) (*mongo.UpdateResult, error)
 }
@@ -26,25 +25,6 @@ func NewTodoRepository(db *mongo.Client) Repository {
 	return &TodoRepository{
 		db: db,
 	}
-}
-
-// GetTodos returns all todos
-func (t *TodoRepository) GetTodos() ([]*entity.Todo, error) {
-	collection := t.db.Database("todos-db").Collection("todos")
-	cur, err := collection.Find(context.Background(), bson.D{})
-	avoidPanic(err)
-
-	var results []*entity.Todo
-
-	for cur.Next(context.Background()) {
-		// create a value into which the single document can be decoded
-		var elem *entity.Todo
-		err := cur.Decode(&elem)
-		avoidPanic(err)
-		results = append(results, elem)
-	}
-
-	return results, nil
 }
 
 // CreateTodo saves todo to db
