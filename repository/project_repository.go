@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -59,7 +60,7 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 	collection := p.db.Database("projects-db").Collection("projects")
 
 	insert := bson.D{
-		{Key: "id", Value: project.Id},
+		{Key: "id", Value: primitive.NewObjectID()},
 		{Key: "name", Value: project.Name},
 		{Key: "description", Value: project.Description},
 		{Key: "todos", Value: project.Todos},
