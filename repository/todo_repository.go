@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -53,6 +54,7 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 	defer cancel()
 
 	collection := t.db.Database("todos-db").Collection("todos")
+	todo.Id = primitive.NewObjectID()
 	_, err := collection.InsertOne(ctx, *todo)
 	avoidPanic(err)
 
