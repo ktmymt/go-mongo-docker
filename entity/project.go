@@ -3,17 +3,19 @@ package entity
 import (
 	"strconv"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Project entity has following data.
 // Id, Name, Description, Todos, Color, and UpdateDate?
 type Project struct {
-	Id          int       `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Todos       []Todo    `json:"todos"`
-	Color       string    `json:"color"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	Id          primitive.ObjectID `bson:"_id" json:"id,omitempty"`
+	Name        string             `json:"name"`
+	Description string             `json:"description"`
+	Todos       []Todo             `json:"todos"`
+	Color       string             `json:"color"`
+	UpdatedAt   time.Time          `json:"updatedAt"`
 }
 
 func (project *Project) Validation(errors Errors, errorMessage ErrorMessage) Errors {
