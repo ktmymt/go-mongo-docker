@@ -8,7 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Project repository functions
@@ -33,23 +32,40 @@ func NewProjectRepository(db *mongo.Client) ProjectRepository {
 
 // GetProjects() returns all projects.
 func (p *projectRepository) GetProjects() ([]*entity.Project, error) {
-	collection := p.db.Database("projects-db").Collection("projects")
-
-	filter := options.Find()
-	filter.SetSort(bson.D{{Key: "updatedAt", Value: -1}})
-	cur, err := collection.Find(context.Background(), bson.D{}, filter)
+	projectCollection := p.db.Database("projects-db").Collection("projects")
+	projectFindResult, err := projectCollection.Find(context.Background(), bson.D{})
 	avoidPanic(err)
 
-	var results []*entity.Project
+	todoCollection := p.db.Database("todos-db").Collection("todos")
+	todoFindResult, err := todoCollection.Find(context.Background(), bson.D{})
+	avoidPanic(err)
 
-	for cur.Next(context.Background()) {
+	var projects []*entity.Project
+	var todos []*entity.Todo
+
+	for projectFindResult.Next(context.Background()) {
 		var projcet *entity.Project
-		err := cur.Decode(&projcet)
+		err := projectFindResult.Decode(&projcet)
 		avoidPanic(err)
-		results = append(results, projcet)
+		projects = append(projects, projcet)
 	}
 
-	return results, nil
+	for todoFindResult.Next(context.Background()) {
+		var todo *entity.Todo
+		err := todoFindResult.Decode(&todo)
+		avoidPanic(err)
+		todos = append(todos, todo)
+	}
+
+	for _, project := range projects {
+		for _, todo := range todos {
+			if project.Id == todo.ProjectId {
+				project.Todos = append(project.Todos, *todo)
+			}
+		}
+	}
+
+	return projects, nil
 }
 
 // CreateProject() registers a project in db.
@@ -101,11 +117,15 @@ func (p *projectRepository) DeleteProject(project *entity.Project, id string) (*
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	collection := p.db.Database("projects-db").Collection("projects")
+	projectCollection := p.db.Database("projects-db").Collection("projects")
+	todoCollection := p.db.Database("todos-db").Collection("todos")
 
-	filter := bson.M{"id": convertToInt(id)}
-	result, err := collection.DeleteOne(ctx, filter)
+	projectFilter := bson.M{"id": convertToInt(id)}
+	result, err := projectCollection.DeleteOne(ctx, projectFilter)
 	avoidPanic(err)
+
+	todoFilter := bson.M{"projectId": convertToInt(id)}
+	_, err = todoCollection.DeleteMany(ctx, todoFilter)
 
 	return result, nil
 }

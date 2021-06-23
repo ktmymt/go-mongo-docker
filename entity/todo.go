@@ -12,9 +12,10 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
  * etc...
  */
 type Todo struct {
-	Id       primitive.ObjectID `json:"id"`
-	Title    string             `json:"title"`
-	IsDone   bool               `json:"isDone"`
-	Status   string             `json:"status"`
-	Schedule int                `json:"schedule"`
+	Id        primitive.ObjectID `json:"id"`
+	ProjectId int                `json:"projectId"`
+	Title     string             `json:"title"`
+	IsDone    bool               `json:"isDone"`
+	Status    string             `json:"status"`
+	Schedule  int                `json:"schedule"`
 }
