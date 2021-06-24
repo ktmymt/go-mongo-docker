@@ -1,6 +1,10 @@
 package entity
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"strconv"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 // Todo entity has title and description
 /**
@@ -18,4 +22,28 @@ type Todo struct {
 	IsDone    bool               `json:"isDone"`
 	Status    string             `json:"status"`
 	Schedule  int                `json:"schedule"`
+}
+
+func (todo *Todo) Validation(errors Errors, errorMessage ErrorMessage) Errors {
+	maxTodoTitleLength := 40
+
+	if len(todo.Title) > maxTodoTitleLength {
+		errorMessage.Name = "todoTitile"
+		errorMessage.Message = "Todo's title must be less than " + strconv.Itoa(maxTodoTitleLength) + "characters."
+		errors.Errors = append(errors.Errors, errorMessage)
+	}
+
+	if len(todo.Status) == 0 {
+		errorMessage.Name = "todoStatus"
+		errorMessage.Message = "Please select the Todo status"
+		errors.Errors = append(errors.Errors, errorMessage)
+	}
+
+	if todo.Schedule < 0 {
+		errorMessage.Name = "todoSchedule"
+		errorMessage.Message = "The value of the Todo schedule must be more than 0"
+		errors.Errors = append(errors.Errors, errorMessage)
+	}
+
+	return errors
 }
