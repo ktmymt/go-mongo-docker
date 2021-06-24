@@ -49,7 +49,7 @@ func main() {
 
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
-			"message": "check again",
+			"message": "test",
 		})
 	})
 
