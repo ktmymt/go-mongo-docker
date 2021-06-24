@@ -32,7 +32,7 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	collection := t.db.Database("todos-db").Collection("todos")
+	collection := t.db.Database("taski").Collection("todos")
 	_, err := collection.InsertOne(ctx, *todo)
 	avoidPanic(err)
 
@@ -44,7 +44,7 @@ func (t *TodoRepository) UpdateTodo(todo *entity.Todo, id string) (*mongo.Update
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	collection := t.db.Database("todos-db").Collection("todos")
+	collection := t.db.Database("taski").Collection("todos")
 
 	filter := bson.M{"id": convertToInt(id)}
 	update := bson.M{
