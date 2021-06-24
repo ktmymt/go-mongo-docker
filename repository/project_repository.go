@@ -123,12 +123,13 @@ func (p *projectRepository) DeleteProject(project *entity.Project, id string) (*
 	projectCollection := p.db.Database("projects-db").Collection("projects")
 	todoCollection := p.db.Database("todos-db").Collection("todos")
 
-	projectFilter := bson.M{"id": convertToObjectId(id)}
+	projectFilter := bson.M{"_id": convertToObjectId(id)}
 	result, err := projectCollection.DeleteOne(ctx, projectFilter)
 	avoidPanic(err)
 
 	todoFilter := bson.M{"projectId": convertToObjectId(id)}
 	_, err = todoCollection.DeleteMany(ctx, todoFilter)
+	avoidPanic(err)
 
 	return result, nil
 }
