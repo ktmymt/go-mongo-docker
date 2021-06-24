@@ -33,7 +33,17 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 	defer cancel()
 
 	collection := t.db.Database("todos-db").Collection("todos")
-	_, err := collection.InsertOne(ctx, *todo)
+
+	insert := bson.D{
+		{Key: "id", Value: todo.Id},
+		{Key: "projectId", Value: todo.ProjectId},
+		{Key: "title", Value: todo.Title},
+		{Key: "isDone", Value: todo.IsDone},
+		{Key: "status", Value: todo.Status},
+		{Key: "schedule", Value: todo.Schedule},
+	}
+
+	_, err := collection.InsertOne(ctx, insert)
 	avoidPanic(err)
 
 	return todo, nil
@@ -46,7 +56,7 @@ func (t *TodoRepository) UpdateTodo(todo *entity.Todo, id string) (*mongo.Update
 
 	collection := t.db.Database("todos-db").Collection("todos")
 
-	filter := bson.M{"id": convertToInt(id)}
+	filter := bson.M{"id": convertToPrimitiveObjectId(id)}
 	update := bson.M{
 		"$set": bson.M{
 			"title":    todo.Title,

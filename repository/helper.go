@@ -1,6 +1,8 @@
 package repository
 
-import "strconv"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 // avoidPanic() catches an error and terminates the program.
 func avoidPanic(err error) {
@@ -10,8 +12,8 @@ func avoidPanic(err error) {
 }
 
 // convertToInt() converts string datum into int datum
-func convertToInt(datum string) int {
-	convertedDatum, err := strconv.Atoi(datum)
+func convertToPrimitiveObjectId(datum string) primitive.ObjectID {
+	convertedDatum, err := primitive.ObjectIDFromHex(datum)
 	avoidPanic(err)
 
 	return convertedDatum
