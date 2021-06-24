@@ -56,7 +56,7 @@ func (t *TodoRepository) UpdateTodo(todo *entity.Todo, id string) (*mongo.Update
 
 	collection := t.db.Database("todos-db").Collection("todos")
 
-	filter := bson.M{"id": convertToPrimitiveObjectId(id)}
+	filter := bson.M{"_id": convertToObjectId(id)}
 	update := bson.M{
 		"$set": bson.M{
 			"title":    todo.Title,

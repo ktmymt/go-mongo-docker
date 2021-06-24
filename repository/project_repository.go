@@ -99,7 +99,7 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 
 	collection := p.db.Database("projects-db").Collection("projects")
 
-	filter := bson.M{"id": convertToPrimitiveObjectId(id)}
+	filter := bson.M{"_id": convertToObjectId(id)}
 	update := bson.M{
 		"$set": bson.M{
 			"name":        project.Name,
@@ -123,11 +123,11 @@ func (p *projectRepository) DeleteProject(project *entity.Project, id string) (*
 	projectCollection := p.db.Database("projects-db").Collection("projects")
 	todoCollection := p.db.Database("todos-db").Collection("todos")
 
-	projectFilter := bson.M{"id": convertToPrimitiveObjectId(id)}
+	projectFilter := bson.M{"id": convertToObjectId(id)}
 	result, err := projectCollection.DeleteOne(ctx, projectFilter)
 	avoidPanic(err)
 
-	todoFilter := bson.M{"projectId": convertToPrimitiveObjectId(id)}
+	todoFilter := bson.M{"projectId": convertToObjectId(id)}
 	_, err = todoCollection.DeleteMany(ctx, todoFilter)
 
 	return result, nil
