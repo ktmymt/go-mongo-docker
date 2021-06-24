@@ -15,6 +15,7 @@ services:
       - PORT=8000
     ports:
       - "8000:8000"
+    command: air
     depends_on:
       - "mongo"
 
