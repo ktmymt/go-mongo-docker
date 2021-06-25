@@ -13,6 +13,7 @@ import (
 type Repository interface {
 	CreateTodo(*entity.Todo) (*entity.Todo, error)
 	UpdateTodo(*entity.Todo, string) (*mongo.UpdateResult, error)
+	DeleteTodo(*entity.Todo, string) (*mongo.DeleteResult, error)
 }
 
 // TodoRepository structure has db
@@ -66,6 +67,19 @@ func (t *TodoRepository) UpdateTodo(todo *entity.Todo, id string) (*mongo.Update
 		}}
 
 	result, err := collection.UpdateOne(ctx, filter, update)
+	avoidPanic(err)
+
+	return result, nil
+}
+
+func (t *TodoRepository) DeleteTodo(todo *entity.Todo, id string) (*mongo.DeleteResult, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	collection := t.db.Database("taski").Collection("todos")
+
+	filter := bson.M{"_id": convertToObjectId(id)}
+	result, err := collection.DeleteOne(ctx, filter)
 	avoidPanic(err)
 
 	return result, nil

@@ -12,6 +12,7 @@ import (
 type TodoController interface {
 	PostTodo(*gin.Context)
 	UpdateTodo(*gin.Context)
+	DeleteTodo(*gin.Context)
 }
 
 type todoController struct {
@@ -79,6 +80,22 @@ func (ctl *todoController) UpdateTodo(c *gin.Context) {
 	}
 
 	HTTPRes(c, http.StatusOK, "Todo saved", &updTodo)
+}
+
+func (ctl *todoController) DeleteTodo(c *gin.Context) {
+	delTodo := entity.Todo{}
+
+	if err := c.ShouldBindJSON(&delTodo); err != nil {
+		HTTPRes(c, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	if _, err := ctl.ts.DeleteTodo(&delTodo, c.Param("id")); err != nil {
+		HTTPRes(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	HTTPRes(c, http.StatusOK, "Todo saved", &delTodo)
 }
 
 func areParamsValid(params entity.Todo) bool {
