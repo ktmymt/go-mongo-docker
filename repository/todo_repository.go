@@ -32,7 +32,7 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	collection := t.db.Database("todos-db").Collection("todos")
+	collection := t.db.Database("taski").Collection("todos")
 
 	insert := bson.D{
 		{Key: "id", Value: todo.Id},
@@ -54,7 +54,7 @@ func (t *TodoRepository) UpdateTodo(todo *entity.Todo, id string) (*mongo.Update
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	collection := t.db.Database("todos-db").Collection("todos")
+	collection := t.db.Database("taski").Collection("todos")
 
 	filter := bson.M{"_id": convertToObjectId(id)}
 	update := bson.M{
