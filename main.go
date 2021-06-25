@@ -31,25 +31,25 @@ func main() {
 	// Setup DB
 	config := configs.GetConfig()
 	options := options.Client().ApplyURI(config.MongoDB.URI)
-	mongodb, err := mongo.Connect(context.Background(), options)
+	client, err := mongo.Connect(context.Background(), options)
 
 	if err != nil {
 		panic(err)
 	}
 
 	// Setup PROJECT controller
-	projectRepo := repository.NewProjectRepository(mongodb)
+	projectRepo := repository.NewProjectRepository(client)
 	projectserv := services.ProjectService(projectRepo)
 	projcetCont := controllers.NewProjectController(projectserv)
 
 	// Setup TODO controller
-	todoRepo := repository.NewTodoRepository(mongodb)
+	todoRepo := repository.NewTodoRepository(client)
 	todoService := services.TodoService(todoRepo)
 	todoCtl := controllers.NewTodoController(todoService)
 
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
-			"message": "Hello world",
+			"message": "test",
 		})
 	})
 

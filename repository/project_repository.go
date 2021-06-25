@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Project repository functions
@@ -32,11 +33,14 @@ func NewProjectRepository(db *mongo.Client) ProjectRepository {
 
 // GetProjects() returns all projects.
 func (p *projectRepository) GetProjects() ([]*entity.Project, error) {
-	projectCollection := p.db.Database("projects-db").Collection("projects")
-	projectFindResult, err := projectCollection.Find(context.Background(), bson.D{})
+	projectCollection := p.db.Database("taski").Collection("projects")
+
+	filter := options.Find()
+	filter.SetSort(bson.D{{Key: "updatedAt", Value: -1}})
+	projectFindResult, err := projectCollection.Find(context.Background(), bson.D{}, filter)
 	avoidPanic(err)
 
-	todoCollection := p.db.Database("todos-db").Collection("todos")
+	todoCollection := p.db.Database("taski").Collection("todos")
 	todoFindResult, err := todoCollection.Find(context.Background(), bson.D{})
 	avoidPanic(err)
 
@@ -73,7 +77,7 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	collection := p.db.Database("projects-db").Collection("projects")
+	collection := p.db.Database("taski").Collection("projects")
 
 	insert := bson.D{
 		{Key: "id", Value: primitive.NewObjectID()},
