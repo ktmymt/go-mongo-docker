@@ -56,6 +56,7 @@ func main() {
 	// Setup routers for "TODO"
 	r.POST("/api/todo", todoCtl.PostTodo)
 	r.PUT("/api/updTodo/:id", todoCtl.UpdateTodo)
+	r.DELETE("/api/delTodo/:id", todoCtl.DeleteTodo)
 
 	// Setup routers for "Project"
 	r.GET("/api/projects", projcetCont.GetProjects)
