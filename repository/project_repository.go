@@ -97,7 +97,7 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	collection := p.db.Database("projects-db").Collection("projects")
+	collection := p.db.Database("taski").Collection("projects")
 
 	filter := bson.M{"_id": convertToObjectId(id)}
 	update := bson.M{
@@ -120,8 +120,8 @@ func (p *projectRepository) DeleteProject(project *entity.Project, id string) (*
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	projectCollection := p.db.Database("projects-db").Collection("projects")
-	todoCollection := p.db.Database("todos-db").Collection("todos")
+	projectCollection := p.db.Database("taski").Collection("projects")
+	todoCollection := p.db.Database("taski").Collection("todos")
 
 	projectFilter := bson.M{"_id": convertToObjectId(id)}
 	result, err := projectCollection.DeleteOne(ctx, projectFilter)
