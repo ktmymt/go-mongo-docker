@@ -98,8 +98,15 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 		}}
 
 	_, err = collection.UpdateOne(ctx, filter, update)
+	avoidPanic(err)
 
-	return project, nil
+	updateResult := collection.FindOne(ctx, bson.M{"id": autoIncrementedId})
+
+	var newProject *entity.Project
+	decodedUpdateResult := updateResult.Decode(&newProject)
+	avoidPanic(decodedUpdateResult)
+
+	return newProject, nil
 }
 
 // UpdateProject() updates data of a project.
