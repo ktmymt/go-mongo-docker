@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -79,15 +80,24 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 	collection := p.db.Database("taski").Collection("projects")
 
 	insert := bson.D{
-		{Key: "id", Value: project.Id},
 		{Key: "name", Value: project.Name},
 		{Key: "description", Value: project.Description},
 		{Key: "todos", Value: project.Todos},
 		{Key: "color", Value: project.Color},
 		{Key: "updatedAt", Value: time.Now()},
 	}
-	_, err := collection.InsertOne(ctx, insert)
+
+	incompleteInsertion, err := collection.InsertOne(ctx, insert)
 	avoidPanic(err)
+
+	autoIncrementedId := incompleteInsertion.InsertedID.(primitive.ObjectID).Hex()
+	filter := bson.M{"_id": convertToObjectId(autoIncrementedId)}
+	update := bson.M{
+		"$set": bson.M{
+			"id": autoIncrementedId,
+		}}
+
+	_, err = collection.UpdateOne(ctx, filter, update)
 
 	return project, nil
 }
@@ -97,7 +107,7 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	collection := p.db.Database("projects-db").Collection("projects")
+	collection := p.db.Database("taski").Collection("projects")
 
 	filter := bson.M{"_id": convertToObjectId(id)}
 	update := bson.M{
@@ -120,8 +130,8 @@ func (p *projectRepository) DeleteProject(project *entity.Project, id string) (*
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	projectCollection := p.db.Database("projects-db").Collection("projects")
-	todoCollection := p.db.Database("todos-db").Collection("todos")
+	projectCollection := p.db.Database("taski").Collection("projects")
+	todoCollection := p.db.Database("taski").Collection("todos")
 
 	projectFilter := bson.M{"_id": convertToObjectId(id)}
 	result, err := projectCollection.DeleteOne(ctx, projectFilter)

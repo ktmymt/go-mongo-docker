@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -36,7 +37,6 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 	collection := t.db.Database("taski").Collection("todos")
 
 	insert := bson.D{
-		{Key: "id", Value: todo.Id},
 		{Key: "projectId", Value: todo.ProjectId},
 		{Key: "title", Value: todo.Title},
 		{Key: "isDone", Value: todo.IsDone},
@@ -44,8 +44,17 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 		{Key: "schedule", Value: todo.Schedule},
 	}
 
-	_, err := collection.InsertOne(ctx, insert)
+	incompleteInsertion, err := collection.InsertOne(ctx, insert)
 	avoidPanic(err)
+
+	autoIncrementedId := incompleteInsertion.InsertedID.(primitive.ObjectID).Hex()
+	filter := bson.M{"_id": convertToObjectId(autoIncrementedId)}
+	update := bson.M{
+		"$set": bson.M{
+			"id": autoIncrementedId,
+		}}
+
+	_, err = collection.UpdateOne(ctx, filter, update)
 
 	return todo, nil
 }
