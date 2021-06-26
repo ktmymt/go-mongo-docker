@@ -10,6 +10,7 @@ import (
 
 // TodoController interface
 type TodoController interface {
+	GetTodos(*gin.Context)
 	PostTodo(*gin.Context)
 	UpdateTodo(*gin.Context)
 	DeleteTodo(*gin.Context)
@@ -22,6 +23,13 @@ type todoController struct {
 // NewTodoController returns Todo Controller
 func NewTodoController(ts services.TodoService) TodoController {
 	return &todoController{ts: ts}
+}
+
+func (ctl *todoController) GetTodos(c *gin.Context) {
+	todos, err := ctl.ts.GetTodos(c.Param("id"))
+	AvoidPanic(err)
+
+	HTTPRes(c, http.StatusOK, "get todos", todos)
 }
 
 func (ctl *todoController) PostTodo(c *gin.Context) {
