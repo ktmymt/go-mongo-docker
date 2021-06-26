@@ -39,12 +39,13 @@ func (ctl *todoController) PostTodo(c *gin.Context) {
 		return
 	}
 
-	if _, err := ctl.ts.CreateTodo(&newTodo); err != nil {
+	newCreatedTodo, err := ctl.ts.CreateTodo(&newTodo)
+	if err != nil {
 		HTTPRes(c, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
-	HTTPRes(c, http.StatusOK, "Todo saved", &newTodo)
+	HTTPRes(c, http.StatusOK, "Todo saved", newCreatedTodo)
 }
 
 func (ctl *todoController) UpdateTodo(c *gin.Context) {

@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"go-mongo-docker/entity"
 	"go-mongo-docker/services"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 //
@@ -49,12 +50,13 @@ func (ctl *projectController) PostProject(ctx *gin.Context) {
 		return
 	}
 
-	if _, err := ctl.ps.CreateProject(&newProject); err != nil {
+	newCreatedProject, err := ctl.ps.CreateProject(&newProject)
+	if err != nil {
 		HTTPRes(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
-	HTTPRes(ctx, http.StatusOK, "Project saved", &newProject)
+	HTTPRes(ctx, http.StatusOK, "Project saved", newCreatedProject)
 }
 
 func (ctl *projectController) UpdateProject(ctx *gin.Context) {
