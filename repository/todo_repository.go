@@ -55,8 +55,15 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 		}}
 
 	_, err = collection.UpdateOne(ctx, filter, update)
+	avoidPanic(err)
 
-	return todo, nil
+	updateResult := collection.FindOne(ctx, bson.M{"id": autoIncrementedId})
+
+	var newTodo *entity.Todo
+	decodedUpdateResult := updateResult.Decode(&newTodo)
+	avoidPanic(decodedUpdateResult)
+
+	return newTodo, nil
 }
 
 // UpdateTodo modify todo data
