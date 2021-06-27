@@ -58,8 +58,12 @@ func main() {
 		})
 	})
 
-	// Setup routers for "User"
-	r.GET("/api/userProjects/", userCont.GetOwnProjects) //?username=&email=
+	/**
+	 * @summary: Setup routers for "User"
+	 * @usage  : send HTTP request in the form as following
+	 * @form   : /api/userProjects?username=myUsername&email=myExample@email.com
+	 */
+	r.GET("/api/userProjects", userCont.GetOwnProjects)
 
 	// Setup routers for "Project"
 	r.GET("/api/projects", projcetCont.GetProjects)
