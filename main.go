@@ -59,7 +59,7 @@ func main() {
 	})
 
 	// Setup routers for "User"
-	r.POST("/api/userProjects/:username/:email", userCont.GetOwnProjects)
+	r.GET("/api/userProjects/", userCont.GetOwnProjects) //?username=&email=
 
 	// Setup routers for "Project"
 	r.GET("/api/projects", projcetCont.GetProjects)
