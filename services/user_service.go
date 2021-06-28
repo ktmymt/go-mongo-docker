@@ -6,7 +6,7 @@ import (
 )
 
 type UserService interface {
-	GetOwnProjects() ([]*entity.Project, error)
+	GetOwnProjects(userId string) ([]*entity.Project, error)
 }
 
 type userService struct {
@@ -19,6 +19,6 @@ func NewUserService(userRepo repository.UserRepository) UserService {
 	}
 }
 
-func (us *userService) GetOwnProjects() ([]*entity.Project, error) {
-	return us.UserRepo.GetOwnProjects()
+func (us *userService) GetOwnProjects(userId string) ([]*entity.Project, error) {
+	return us.UserRepo.GetOwnProjects(userId)
 }

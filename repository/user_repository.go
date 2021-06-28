@@ -7,7 +7,7 @@ import (
 )
 
 type UserRepository interface {
-	GetOwnProjects() ([]*entity.Project, error)
+	GetOwnProjects(string) ([]*entity.Project, error)
 }
 
 type userRepository struct {
@@ -25,6 +25,6 @@ func NewUserRepository(db *mongo.Client) UserRepository {
  * @summary: gets projects by user id
  * @return : projects, error
  */
-func (ur *userRepository) GetOwnProjects() ([]*entity.Project, error) {
+func (ur *userRepository) GetOwnProjects(userId string) ([]*entity.Project, error) {
 	return nil, nil
 }
