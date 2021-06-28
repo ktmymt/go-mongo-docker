@@ -1,8 +1,12 @@
 package repository
 
 import (
+	"context"
 	"go-mongo-docker/entity"
+	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -26,5 +30,28 @@ func NewUserRepository(db *mongo.Client) UserRepository {
  * @return : projects, error
  */
 func (ur *userRepository) GetOwnProjects(username string, email string) ([]*entity.Project, error) {
+	// register user
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	collection := ur.db.Database("taski").Collection("users")
+	insert := bson.D{
+		{Key: "username", Value: username},
+		{Key: "email", Value: email},
+	}
+
+	incompleteInsertion, err := collection.InsertOne(ctx, insert)
+	avoidPanic(err)
+
+	autoIncrementedId := incompleteInsertion.InsertedID.(primitive.ObjectID).Hex()
+	filter := bson.M{"_id": convertToObjectId(autoIncrementedId)}
+	update := bson.M{
+		"$set": bson.M{
+			"id": autoIncrementedId,
+		}}
+
+	_, err = collection.UpdateOne(ctx, filter, update)
+	avoidPanic(err)
+
 	return nil, nil
 }
