@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"go-mongo-docker/services"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,5 +23,8 @@ func NewUserController(us services.UserService) UserController {
 }
 
 func (ctl *userController) GetOwnProjects(ctx *gin.Context) {
-	//TODO
+	ownProjects, err := ctl.us.GetOwnProjects()
+	AvoidPanic(err)
+
+	HTTPRes(ctx, http.StatusOK, "get own projects", ownProjects)
 }
