@@ -7,6 +7,7 @@ import (
 	"go-mongo-docker/repository"
 	"go-mongo-docker/services"
 	"net/http"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -17,16 +18,15 @@ import (
 
 func main() {
 	r := gin.Default()
-
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowOrigins = []string{"http://localhost:3000"}
-	r.Use(cors.New(corsConfig))
-
 	err := godotenv.Load()
 
 	if err != nil {
 		panic(err)
 	}
+
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{os.Getenv("FRONT_URL")}
+	r.Use(cors.New(corsConfig))
 
 	// Setup DB
 	config := configs.GetConfig()
