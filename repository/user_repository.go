@@ -11,7 +11,7 @@ import (
 )
 
 type UserRepository interface {
-	GetOwnProjects(string, string) ([]*entity.Project, error)
+	GetOwnProjects(string, string, string) ([]*entity.Project, error)
 }
 
 type userRepository struct {
@@ -29,7 +29,7 @@ func NewUserRepository(db *mongo.Client) UserRepository {
  * @summary: gets projects by user id
  * @return : projects, error
  */
-func (ur *userRepository) GetOwnProjects(username string, email string) ([]*entity.Project, error) {
+func (ur *userRepository) GetOwnProjects(userId string, username string, email string) ([]*entity.Project, error) {
 	// register user
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()

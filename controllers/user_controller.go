@@ -23,10 +23,11 @@ func NewUserController(us services.UserService) UserController {
 }
 
 func (ctl *userController) GetOwnProjects(ctx *gin.Context) {
+	userId := ctx.DefaultQuery("userId", "")
 	username := ctx.DefaultQuery("username", "Guest")
 	email := ctx.DefaultQuery("email", "")
 
-	ownProjects, err := ctl.us.GetOwnProjects(username, email)
+	ownProjects, err := ctl.us.GetOwnProjects(userId, username, email)
 	AvoidPanic(err)
 
 	HTTPRes(ctx, http.StatusOK, "get own projects", ownProjects)
