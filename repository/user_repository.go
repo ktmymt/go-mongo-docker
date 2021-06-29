@@ -43,8 +43,6 @@ func (ur *userRepository) GetOwnProjects(userId string, username string, email s
 	incompleteInsertion, err := collection.InsertOne(ctx, insert)
 	avoidPanic(err)
 
-	// autoIncrementedId := incompleteInsertion.InsertedID.(primitive.ObjectID).Hex()
-	// filter := bson.M{"_id": convertToObjectId(autoIncrementedId)}
 	autoIncrementedId := incompleteInsertion.InsertedID.(primitive.ObjectID)
 	filter := bson.M{"_id": autoIncrementedId}
 	update := bson.M{
