@@ -61,7 +61,7 @@ func main() {
 	/**
 	 * @summary: Setup routers for "User"
 	 * @usage  : send HTTP request in the form as following
-	 *         : /api/userProjects?username=myUsername&email=myExample@email.com
+	 *         : /api/userProjects?userId=myUserId&username=myUsername&email=myExample@email.com
 	 */
 	r.GET("/api/userProjects", userCont.GetOwnProjects)
 
