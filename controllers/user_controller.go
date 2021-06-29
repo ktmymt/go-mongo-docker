@@ -24,7 +24,7 @@ func NewUserController(us services.UserService) UserController {
 
 func (ctl *userController) GetOwnProjects(ctx *gin.Context) {
 	userId := ctx.DefaultQuery("userId", "")
-	username := ctx.DefaultQuery("username", "Guest")
+	username := ctx.DefaultQuery("username", "")
 	email := ctx.DefaultQuery("email", "")
 
 	ownProjects, err := ctl.us.GetOwnProjects(userId, username, email)

@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type UserRepository interface {
@@ -53,5 +54,24 @@ func (ur *userRepository) GetOwnProjects(userId string, username string, email s
 	_, err = collection.UpdateOne(ctx, filter, update)
 	avoidPanic(err)
 
-	return nil, nil
+	// get projects
+	projectCollection := ur.db.Database("taski").Collection("projects")
+
+	projectFilter := options.Find()
+	projectFilter.SetSort(bson.D{{Key: "updatedAt", Value: -1}})
+	projectFindResult, err := projectCollection.Find(context.Background(), bson.D{}, projectFilter)
+	avoidPanic(err)
+
+	var projects []*entity.Project
+
+	for projectFindResult.Next(context.Background()) {
+		var projcet *entity.Project
+		if projcet.UserId == autoIncrementedId {
+			err := projectFindResult.Decode(&projcet)
+			avoidPanic(err)
+			projects = append(projects, projcet)
+		}
+	}
+
+	return projects, nil
 }
