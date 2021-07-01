@@ -12,7 +12,7 @@ import (
 )
 
 type UserRepository interface {
-	GetOwnProjects(string, string, string) ([]*entity.Project, error)
+	GetOwnProjects(string, string) ([]*entity.Project, error)
 }
 
 type userRepository struct {
@@ -54,12 +54,7 @@ func createNewUser(ur *userRepository, username string, email string) {
  * @summary: gets projects by user id
  * @return : projects, error
  */
-func (ur *userRepository) GetOwnProjects(userId string, username string, email string) ([]*entity.Project, error) {
-
-	if userId == "" {
-		createNewUser(ur, username, email)
-		return nil, nil
-	}
+func (ur *userRepository) GetOwnProjects(username string, email string) ([]*entity.Project, error) {
 
 	// get projects
 	projectCollection := ur.db.Database("taski").Collection("projects")
@@ -73,7 +68,7 @@ func (ur *userRepository) GetOwnProjects(userId string, username string, email s
 		var projcet *entity.Project
 		err := projectFindResult.Decode(&projcet)
 		avoidPanic(err)
-		if projcet.UserId == convertToObjectId(userId) {
+		if projcet.UserEmail == email {
 			projects = append(projects, projcet)
 		}
 	}
