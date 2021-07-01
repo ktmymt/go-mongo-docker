@@ -73,5 +73,26 @@ func (ur *userRepository) GetOwnProjects(username string, email string) ([]*enti
 		}
 	}
 
+	// get todos
+	todoCollection := ur.db.Database("taski").Collection("todos")
+	todoFindResult, err := todoCollection.Find(context.Background(), bson.D{})
+	avoidPanic(err)
+
+	var todos []*entity.Todo
+	for todoFindResult.Next(context.Background()) {
+		var todo *entity.Todo
+		err := todoFindResult.Decode(&todo)
+		avoidPanic(err)
+		todos = append(todos, todo)
+	}
+
+	for _, project := range projects {
+		for _, todo := range todos {
+			if project.Id == todo.ProjectId {
+				project.Todos = append(project.Todos, *todo)
+			}
+		}
+	}
+
 	return projects, nil
 }
