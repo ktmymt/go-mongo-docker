@@ -37,6 +37,11 @@ func main() {
 		panic(err)
 	}
 
+	// Setup USER controller
+	userRepo := repository.NewUserRepository(client)
+	userServ := services.NewUserService(userRepo)
+	userCont := controllers.NewUserController(userServ)
+
 	// Setup PROJECT controller
 	projectRepo := repository.NewProjectRepository(client)
 	projectserv := services.ProjectService(projectRepo)
@@ -53,17 +58,24 @@ func main() {
 		})
 	})
 
-	// Setup routers for "TODO"
-	r.GET("/api/todos/:id", todoCtl.GetTodos)
-	r.POST("/api/todo", todoCtl.PostTodo)
-	r.PUT("/api/updTodo/:id", todoCtl.UpdateTodo)
-	r.DELETE("/api/delTodo/:id", todoCtl.DeleteTodo)
+	/**
+	 * @summary: Setup routers for "User"
+	 * @usage  : send HTTP request in the form as following
+	 *         : /api/userProjects?username=myUsername&email=myExample@email.com
+	 */
+	r.GET("/api/userProjects", userCont.GetOwnProjects)
 
 	// Setup routers for "Project"
 	r.GET("/api/projects", projcetCont.GetProjects)
 	r.POST("/api/project", projcetCont.PostProject)
 	r.PUT("/api/updProject/:id", projcetCont.UpdateProject)
 	r.DELETE("/api/delProject/:id", projcetCont.DeleteProject)
+
+	// Setup routers for "TODO"
+	r.GET("/api/todos/:id", todoCtl.GetTodos)
+	r.POST("/api/todo", todoCtl.PostTodo)
+	r.PUT("/api/updTodo/:id", todoCtl.UpdateTodo)
+	r.DELETE("/api/delTodo/:id", todoCtl.DeleteTodo)
 
 	r.Run()
 }

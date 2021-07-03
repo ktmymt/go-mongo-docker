@@ -81,6 +81,7 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 
 	insert := bson.D{
 		{Key: "name", Value: project.Name},
+		{Key: "userEmail", Value: project.UserEmail},
 		{Key: "description", Value: project.Description},
 		{Key: "todos", Value: project.Todos},
 		{Key: "color", Value: project.Color},
