@@ -12,7 +12,7 @@ import (
 )
 
 type UserRepository interface {
-	GetOwnProjects(string, string) ([]*entity.Project, error)
+	GetOwnProjects(string) ([]*entity.Project, error)
 }
 
 type userRepository struct {
@@ -54,7 +54,7 @@ func createNewUser(ur *userRepository, username string, email string) {
  * @summary: gets projects by user id
  * @return : projects, error
  */
-func (ur *userRepository) GetOwnProjects(username string, email string) ([]*entity.Project, error) {
+func (ur *userRepository) GetOwnProjects(email string) ([]*entity.Project, error) {
 
 	// get projects
 	projectCollection := ur.db.Database("taski").Collection("projects")
