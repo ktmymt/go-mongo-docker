@@ -65,11 +65,14 @@ func (ur *userRepository) GetOwnProjects(email string) ([]*entity.Project, error
 
 	var projects []*entity.Project
 	for projectFindResult.Next(context.Background()) {
-		var projcet *entity.Project
-		err := projectFindResult.Decode(&projcet)
+		var project *entity.Project
+		err := projectFindResult.Decode(&project)
 		avoidPanic(err)
-		if projcet.UserEmail == email {
-			projects = append(projects, projcet)
+
+		for _, userEmail := range project.UserEmail {
+			if userEmail == email {
+				projects = append(projects, project)
+			}
 		}
 	}
 
