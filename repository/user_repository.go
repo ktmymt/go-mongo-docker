@@ -3,10 +3,8 @@ package repository
 import (
 	"context"
 	"go-mongo-docker/entity"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -24,30 +22,6 @@ func NewUserRepository(db *mongo.Client) UserRepository {
 	return &userRepository{
 		db: db,
 	}
-}
-
-func createNewUser(ur *userRepository, username string, email string) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	collection := ur.db.Database("taski").Collection("users")
-	insert := bson.D{
-		{Key: "username", Value: username},
-		{Key: "email", Value: email},
-	}
-
-	incompleteInsertion, err := collection.InsertOne(ctx, insert)
-	avoidPanic(err)
-
-	autoIncrementedId := incompleteInsertion.InsertedID.(primitive.ObjectID)
-	filter := bson.M{"_id": autoIncrementedId}
-	update := bson.M{
-		"$set": bson.M{
-			"id": autoIncrementedId,
-		}}
-
-	_, err = collection.UpdateOne(ctx, filter, update)
-	avoidPanic(err)
 }
 
 /**
