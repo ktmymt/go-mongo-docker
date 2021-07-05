@@ -80,8 +80,8 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 	collection := p.db.Database("taski").Collection("projects")
 
 	insert := bson.D{
-		{Key: "name", Value: project.Name},
 		{Key: "userEmail", Value: project.UserEmail},
+		{Key: "name", Value: project.Name},
 		{Key: "description", Value: project.Description},
 		{Key: "todos", Value: project.Todos},
 		{Key: "color", Value: project.Color},
@@ -120,6 +120,7 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 	filter := bson.M{"_id": convertToObjectId(id)}
 	update := bson.M{
 		"$set": bson.M{
+			"userEmail":   project.UserEmail,
 			"name":        project.Name,
 			"description": project.Description,
 			"todos":       project.Todos,
