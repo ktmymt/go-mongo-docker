@@ -120,7 +120,6 @@ func (p *projectRepository) UpdateProject(project *entity.Project, id string) (*
 	filter := bson.M{"_id": convertToObjectId(id)}
 	update := bson.M{
 		"$set": bson.M{
-			"userEmail":   project.UserEmail,
 			"name":        project.Name,
 			"description": project.Description,
 			"todos":       project.Todos,
