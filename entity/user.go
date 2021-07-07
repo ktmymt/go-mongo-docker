@@ -11,5 +11,4 @@ type User struct {
 	Username string             `json:"username"`
 	Email    string             `json:"email"`
 	Image    image.Image        `json:"image"`
-	Projects []Project          `json:"projects"`
 }
