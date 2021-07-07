@@ -9,6 +9,7 @@ import (
 
 type UserController interface {
 	GetOwnProjects(*gin.Context)
+	UpdateProjectMembers(*gin.Context)
 }
 
 type userController struct {
@@ -29,4 +30,12 @@ func (ctl *userController) GetOwnProjects(ctx *gin.Context) {
 	AvoidPanic(err)
 
 	HTTPRes(ctx, http.StatusOK, "get own projects", ownProjects)
+}
+
+func (ctl *userController) UpdateProjectMembers(ctx *gin.Context) {
+	// email := ctx.DefaultQuery("email", "")
+
+	// newUser, err := ctl.us.UpdateProjectMembers(email)
+	// AvoidPanic(err)
+
 }

@@ -65,6 +65,11 @@ func main() {
 	 */
 	r.GET("/api/userProjects", userCont.GetOwnProjects)
 
+	/**
+	 * @usage: /api/updMembers?email=newUser@email.com
+	 */
+	r.PUT("/api/updMembers", userCont.UpdateProjectMembers)
+
 	// Setup routers for "Project"
 	r.GET("/api/projects", projcetCont.GetProjects)
 	r.POST("/api/project", projcetCont.PostProject)
