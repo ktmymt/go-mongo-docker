@@ -9,6 +9,7 @@ import (
 
 type UserController interface {
 	GetOwnProjects(*gin.Context)
+	PostUser(*gin.Context)
 	UpdateProjectMembers(*gin.Context)
 }
 
@@ -30,6 +31,10 @@ func (ctl *userController) GetOwnProjects(ctx *gin.Context) {
 	AvoidPanic(err)
 
 	HTTPRes(ctx, http.StatusOK, "get own projects", ownProjects)
+}
+
+func (ctl *userController) PostUser(ctx *gin.Context) {
+
 }
 
 func (ctl *userController) UpdateProjectMembers(ctx *gin.Context) {

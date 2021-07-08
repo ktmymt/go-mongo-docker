@@ -65,6 +65,8 @@ func main() {
 	 */
 	r.GET("/api/userProjects", userCont.GetOwnProjects)
 
+	r.POST("/api/user", userCont.PostUser)
+
 	/**
 	 * @usage: /api/updMembers?email=newUser@email.com
 	 */
