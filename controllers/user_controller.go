@@ -36,9 +36,16 @@ func (ctl *userController) GetOwnProjects(ctx *gin.Context) {
 
 func (ctl *userController) PostUser(ctx *gin.Context) {
 	user := entity.User{}
+	errors := entity.Errors{}
+	errorMessage := entity.ErrorMessage{}
 
 	if err := ctx.ShouldBindJSON(&user); err != nil {
 		HTTPRes(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	if err := user.Validation(errors, errorMessage); len(err.Errors) > 0 {
+		HTTPRes(ctx, http.StatusBadRequest, "Validation Error", err.Errors)
 		return
 	}
 
