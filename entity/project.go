@@ -11,7 +11,7 @@ import (
 // Id, Name, Description, Todos, Color, and UpdateDate?
 type Project struct {
 	Id          primitive.ObjectID `bson:"_id" json:"id,omitempty"`
-	UserEmail   []string           `json:"userEmail"`
+	User        []User             `json:"user"`
 	Name        string             `json:"name"`
 	Description string             `json:"description"`
 	Todos       []Todo             `json:"todos"`
