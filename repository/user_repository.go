@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -85,11 +86,27 @@ func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error)
 	insert := bson.D{
 		{Key: "username", Value: user.Username},
 		{Key: "email", Value: user.Email},
-		{Key: "image", Value: user.Image},
+		// {Key: "image", Value: user.Image},
 	}
 
-	_, err := collection.InsertOne(ctx, insert)
+	incompleteInsertion, err := collection.InsertOne(ctx, insert)
 	avoidPanic(err)
 
-	return user, nil
+	autoIncrementedId := incompleteInsertion.InsertedID.(primitive.ObjectID).Hex()
+	filter := bson.M{"_id": convertToObjectId(autoIncrementedId)}
+	update := bson.M{
+		"$set": bson.M{
+			"id": autoIncrementedId,
+		}}
+
+	_, err = collection.UpdateOne(ctx, filter, update)
+	avoidPanic(err)
+
+	updateResult := collection.FindOne(ctx, bson.M{"id": autoIncrementedId})
+
+	var newUser *entity.User
+	decodedUpdateResult := updateResult.Decode(&newUser)
+	avoidPanic(decodedUpdateResult)
+
+	return newUser, nil
 }
