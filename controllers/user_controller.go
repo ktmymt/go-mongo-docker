@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"go-mongo-docker/entity"
 	"go-mongo-docker/services"
 	"net/http"
 
@@ -34,7 +35,20 @@ func (ctl *userController) GetOwnProjects(ctx *gin.Context) {
 }
 
 func (ctl *userController) PostUser(ctx *gin.Context) {
+	user := entity.User{}
 
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		HTTPRes(ctx, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	newUser, err := ctl.us.CreateNewUser(&user)
+	if err != nil {
+		HTTPRes(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	HTTPRes(ctx, http.StatusOK, "create new user", newUser)
 }
 
 func (ctl *userController) UpdateProjectMembers(ctx *gin.Context) {

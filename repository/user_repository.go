@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"go-mongo-docker/entity"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,6 +12,7 @@ import (
 
 type UserRepository interface {
 	GetOwnProjects(string) ([]*entity.Project, error)
+	CreateNewUser(*entity.User) (*entity.User, error)
 }
 
 type userRepository struct {
@@ -72,4 +74,22 @@ func (ur *userRepository) GetOwnProjects(email string) ([]*entity.Project, error
 	}
 
 	return projects, nil
+}
+
+func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	collection := ur.db.Database("taski").Collection("users")
+
+	insert := bson.D{
+		{Key: "username", Value: user.Username},
+		{Key: "email", Value: user.Email},
+		{Key: "image", Value: user.Image},
+	}
+
+	_, err := collection.InsertOne(ctx, insert)
+	avoidPanic(err)
+
+	return user, nil
 }
