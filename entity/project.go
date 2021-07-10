@@ -10,13 +10,13 @@ import (
 // Project entity has following data.
 // Id, Name, Description, Todos, Color, and UpdateDate?
 type Project struct {
-	Id          primitive.ObjectID `bson:"_id" json:"id,omitempty"`
-	User        []User             `json:"user"`
-	Name        string             `json:"name"`
-	Description string             `json:"description"`
-	Todos       []Todo             `json:"todos"`
-	Color       string             `json:"color"`
-	UpdatedAt   time.Time          `json:"updatedAt"`
+	Id          primitive.ObjectID   `bson:"_id" json:"id,omitempty"`
+	UserId      []primitive.ObjectID `json:"userId"`
+	Name        string               `json:"name"`
+	Description string               `json:"description"`
+	Todos       []Todo               `json:"todos"`
+	Color       string               `json:"color"`
+	UpdatedAt   time.Time            `json:"updatedAt"`
 }
 
 func (project *Project) Validation(errors Errors, errorMessage ErrorMessage) Errors {
