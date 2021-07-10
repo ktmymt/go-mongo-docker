@@ -8,7 +8,7 @@ type User struct {
 	Id       primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 	Username string             `json:"username"`
 	Email    string             `json:"email"`
-	// Image    image.Image        `json:"image"`
+	Image    string             `json:"image"`
 }
 
 func (user *User) Validation(errors Errors, errorMessage ErrorMessage) Errors {
@@ -22,6 +22,12 @@ func (user *User) Validation(errors Errors, errorMessage ErrorMessage) Errors {
 	if user.Email == "" {
 		errorMessage.Name = "Email"
 		errorMessage.Message = "Please gimme your email address"
+		errors.Errors = append(errors.Errors, errorMessage)
+	}
+
+	if user.Image == "" {
+		errorMessage.Name = "Image"
+		errorMessage.Message = "Please gimme your image URL"
 		errors.Errors = append(errors.Errors, errorMessage)
 	}
 
