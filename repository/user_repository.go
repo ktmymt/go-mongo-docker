@@ -45,12 +45,14 @@ func (ur *userRepository) GetOwnProjects(user *entity.User) ([]*entity.Project, 
 		var project *entity.Project
 		err := projectFindResult.Decode(&project)
 		avoidPanic(err)
+		// projects = append(projects, project)
 
-		for _, projectUser := range project.User {
-			if projectUser.Email == user.Email {
+		for _, eachUser := range project.User {
+			if eachUser.Email == user.Email {
 				projects = append(projects, project)
 			}
 		}
+
 	}
 
 	// get todos
