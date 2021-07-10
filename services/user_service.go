@@ -6,7 +6,7 @@ import (
 )
 
 type UserService interface {
-	GetOwnProjects(email string) ([]*entity.Project, error)
+	GetOwnProjects(email string) (*entity.User, error)
 	CreateNewUser(user *entity.User) (*entity.User, error)
 }
 
@@ -20,7 +20,7 @@ func NewUserService(userRepo repository.UserRepository) UserService {
 	}
 }
 
-func (us *userService) GetOwnProjects(email string) ([]*entity.Project, error) {
+func (us *userService) GetOwnProjects(email string) (*entity.User, error) {
 	return us.UserRepo.GetOwnProjects(email)
 }
 

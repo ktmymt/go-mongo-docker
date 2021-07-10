@@ -26,13 +26,12 @@ func NewUserController(us services.UserService) UserController {
 }
 
 func (ctl *userController) GetOwnProjects(ctx *gin.Context) {
-	// user := entity.User{}
 	email := ctx.Param("email")
 
-	ownProjects, err := ctl.us.GetOwnProjects(email)
+	projectUser, err := ctl.us.GetOwnProjects(email)
 	AvoidPanic(err)
 
-	HTTPRes(ctx, http.StatusOK, "get own projects", ownProjects)
+	HTTPRes(ctx, http.StatusOK, "get own projects", projectUser)
 }
 
 func (ctl *userController) PostUser(ctx *gin.Context) {

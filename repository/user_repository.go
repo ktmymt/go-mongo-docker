@@ -12,7 +12,7 @@ import (
 )
 
 type UserRepository interface {
-	GetOwnProjects(string) ([]*entity.Project, error)
+	GetOwnProjects(string) (*entity.User, error)
 	CreateNewUser(*entity.User) (*entity.User, error)
 }
 
@@ -31,7 +31,15 @@ func NewUserRepository(db *mongo.Client) UserRepository {
  * @summary: gets projects by user id
  * @return : projects, error
  */
-func (ur *userRepository) GetOwnProjects(email string) ([]*entity.Project, error) {
+func (ur *userRepository) GetOwnProjects(email string) (*entity.User, error) {
+
+	// get user
+	userCollection := ur.db.Database("taski").Collection("users")
+	userFindResult := userCollection.FindOne(context.Background(), bson.M{"email": email})
+
+	var user *entity.User
+	err := userFindResult.Decode(&user)
+	avoidPanic(err)
 
 	// get projects
 	projectCollection := ur.db.Database("taski").Collection("projects")
@@ -69,7 +77,15 @@ func (ur *userRepository) GetOwnProjects(email string) ([]*entity.Project, error
 		}
 	}
 
-	return projects, nil
+	for _, project := range projects {
+		for _, userId := range project.UserIds {
+			if user.Id == userId {
+				user.Project = append(user.Project, *project)
+			}
+		}
+	}
+
+	return user, nil
 }
 
 func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error) {
@@ -79,6 +95,7 @@ func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error)
 	collection := ur.db.Database("taski").Collection("users")
 
 	insert := bson.D{
+		{Key: "project", Value: user.Project},
 		{Key: "username", Value: user.Username},
 		{Key: "email", Value: user.Email},
 		{Key: "image", Value: user.Image},
