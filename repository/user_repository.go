@@ -88,7 +88,7 @@ func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error)
 	insert := bson.D{
 		{Key: "username", Value: user.Username},
 		{Key: "email", Value: user.Email},
-		// {Key: "image", Value: user.Image},
+		{Key: "image", Value: user.Image},
 	}
 
 	incompleteInsertion, err := collection.InsertOne(ctx, insert)
