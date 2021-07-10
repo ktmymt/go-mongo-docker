@@ -12,7 +12,7 @@ import (
 )
 
 type UserRepository interface {
-	GetOwnProjects(*entity.User) ([]*entity.Project, error)
+	GetOwnProjects(string) ([]*entity.Project, error)
 	CreateNewUser(*entity.User) (*entity.User, error)
 }
 
@@ -31,7 +31,7 @@ func NewUserRepository(db *mongo.Client) UserRepository {
  * @summary: gets projects by user id
  * @return : projects, error
  */
-func (ur *userRepository) GetOwnProjects(user *entity.User) ([]*entity.Project, error) {
+func (ur *userRepository) GetOwnProjects(email string) ([]*entity.Project, error) {
 
 	// get projects
 	projectCollection := ur.db.Database("taski").Collection("projects")

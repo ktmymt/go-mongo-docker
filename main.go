@@ -59,7 +59,7 @@ func main() {
 	})
 
 	// Setup routers for "User"
-	r.GET("/api/userProjects", userCont.GetOwnProjects)
+	r.GET("/api/userProjects/:email", userCont.GetOwnProjects)
 	r.POST("/api/user", userCont.PostUser)
 	r.PUT("/api/updMembers", userCont.UpdateProjectMembers)
 
