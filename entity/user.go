@@ -9,7 +9,6 @@ type User struct {
 	Username string             `json:"username"`
 	Email    string             `json:"email"`
 	Image    string             `json:"image"`
-	Projects []Project          `json:"projects"`
 }
 
 func (user *User) Validation(errors Errors, errorMessage ErrorMessage) Errors {
