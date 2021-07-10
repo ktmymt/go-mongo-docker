@@ -15,19 +15,19 @@ func (user *User) Validation(errors Errors, errorMessage ErrorMessage) Errors {
 
 	if user.Username == "" {
 		errorMessage.Name = "Username"
-		errorMessage.Message = "Please gimme your username"
+		errorMessage.Message = "Please input your username"
 		errors.Errors = append(errors.Errors, errorMessage)
 	}
 
 	if user.Email == "" {
 		errorMessage.Name = "Email"
-		errorMessage.Message = "Please gimme your email address"
+		errorMessage.Message = "Please input your email address"
 		errors.Errors = append(errors.Errors, errorMessage)
 	}
 
 	if user.Image == "" {
 		errorMessage.Name = "Image"
-		errorMessage.Message = "Please gimme your image URL"
+		errorMessage.Message = "Please input your image URL"
 		errors.Errors = append(errors.Errors, errorMessage)
 	}
 
