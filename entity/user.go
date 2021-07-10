@@ -6,6 +6,7 @@ import (
 
 type User struct {
 	Id       primitive.ObjectID `bson:"_id" json:"id,omitempty"`
+	Project  []Project          `json:"project"`
 	Username string             `json:"username"`
 	Email    string             `json:"email"`
 	Image    string             `json:"image"`
