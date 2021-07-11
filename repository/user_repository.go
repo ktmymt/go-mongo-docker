@@ -31,11 +31,11 @@ func NewUserRepository(db *mongo.Client) UserRepository {
  * @summary: gets projects by user id
  * @return : projects, error
  */
-func (ur *userRepository) GetOwnProjects(email string) (*entity.User, error) {
+func (ur *userRepository) GetOwnProjects(id string) (*entity.User, error) {
 
 	// get user
 	userCollection := ur.db.Database("taski").Collection("users")
-	userFindResult := userCollection.FindOne(context.Background(), bson.M{"email": email})
+	userFindResult := userCollection.FindOne(context.Background(), bson.M{"id": id})
 
 	var user *entity.User
 	err := userFindResult.Decode(&user)

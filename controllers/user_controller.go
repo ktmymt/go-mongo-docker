@@ -26,9 +26,9 @@ func NewUserController(us services.UserService) UserController {
 }
 
 func (ctl *userController) GetOwnProjects(ctx *gin.Context) {
-	email := ctx.Param("email")
+	userId := ctx.Param("id")
 
-	projectUser, err := ctl.us.GetOwnProjects(email)
+	projectUser, err := ctl.us.GetOwnProjects(userId)
 	AvoidPanic(err)
 
 	HTTPRes(ctx, http.StatusOK, "get own projects", projectUser)

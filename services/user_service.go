@@ -20,8 +20,8 @@ func NewUserService(userRepo repository.UserRepository) UserService {
 	}
 }
 
-func (us *userService) GetOwnProjects(email string) (*entity.User, error) {
-	return us.UserRepo.GetOwnProjects(email)
+func (us *userService) GetOwnProjects(id string) (*entity.User, error) {
+	return us.UserRepo.GetOwnProjects(id)
 }
 
 func (us *userService) CreateNewUser(user *entity.User) (*entity.User, error) {
