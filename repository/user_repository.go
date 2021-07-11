@@ -101,24 +101,36 @@ func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error)
 		{Key: "image", Value: user.Image},
 	}
 
-	incompleteInsertion, err := collection.InsertOne(ctx, insert)
-	avoidPanic(err)
+	// duplication validation
+	validationResult := collection.FindOne(ctx, insert)
 
-	autoIncrementedId := incompleteInsertion.InsertedID.(primitive.ObjectID).Hex()
-	filter := bson.M{"_id": convertToObjectId(autoIncrementedId)}
-	update := bson.M{
-		"$set": bson.M{
-			"id": autoIncrementedId,
-		}}
+	var duplicatedUser *entity.User
+	decodedValidationResult := validationResult.Decode(&duplicatedUser)
+	// avoidPanic(decodedValidationResult)
 
-	_, err = collection.UpdateOne(ctx, filter, update)
-	avoidPanic(err)
+	if decodedValidationResult != nil {
+		// user insertion
+		incompleteInsertion, err := collection.InsertOne(ctx, insert)
+		avoidPanic(err)
 
-	updateResult := collection.FindOne(ctx, bson.M{"id": autoIncrementedId})
+		autoIncrementedId := incompleteInsertion.InsertedID.(primitive.ObjectID).Hex()
+		filter := bson.M{"_id": convertToObjectId(autoIncrementedId)}
+		update := bson.M{
+			"$set": bson.M{
+				"id": autoIncrementedId,
+			}}
 
-	var newUser *entity.User
-	decodedUpdateResult := updateResult.Decode(&newUser)
-	avoidPanic(decodedUpdateResult)
+		_, err = collection.UpdateOne(ctx, filter, update)
+		avoidPanic(err)
 
-	return newUser, nil
+		updateResult := collection.FindOne(ctx, bson.M{"id": autoIncrementedId})
+
+		var newUser *entity.User
+		decodedUpdateResult := updateResult.Decode(&newUser)
+		avoidPanic(decodedUpdateResult)
+
+		return newUser, nil
+	} else {
+		return user, nil
+	}
 }
