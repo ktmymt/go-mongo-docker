@@ -6,7 +6,7 @@ import (
 )
 
 type UserService interface {
-	GetOwnProjects(email string) (*entity.User, error)
+	GetOwnProjects(id string) (*entity.User, error)
 	CreateNewUser(user *entity.User) (*entity.User, error)
 	UpdateProjectMembers(projectId string, userId string) (*entity.User, error)
 }
