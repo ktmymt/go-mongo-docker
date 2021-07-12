@@ -152,6 +152,13 @@ func (ur *userRepository) UpdateProjectMembers(projectId string, userId string) 
 	userErr := userFindResult.Decode(&user)
 	avoidPanic(userErr)
 
+	// duplication validation
+	for _, eachUser := range project.UserIds {
+		if user.Id == eachUser {
+			return user, nil
+		}
+	}
+
 	// update project member
 	pushFileter := bson.M{"id": projectId}
 	push := bson.M{"$push": bson.M{"userIds": user.Id}}
