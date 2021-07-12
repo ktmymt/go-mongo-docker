@@ -14,6 +14,7 @@ import (
 type UserRepository interface {
 	GetOwnProjects(string) (*entity.User, error)
 	CreateNewUser(*entity.User) (*entity.User, error)
+	UpdateProjectMembers(string, string) (*entity.User, error)
 }
 
 type userRepository struct {
@@ -106,7 +107,6 @@ func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error)
 
 	var duplicatedUser *entity.User
 	decodedValidationResult := validationResult.Decode(&duplicatedUser)
-	// avoidPanic(decodedValidationResult)
 
 	if decodedValidationResult != nil {
 		// user insertion
@@ -133,4 +133,30 @@ func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error)
 	} else {
 		return user, nil
 	}
+}
+
+func (ur *userRepository) UpdateProjectMembers(projectId string, userId string) (*entity.User, error) {
+	// get project
+	projectCollection := ur.db.Database("taski").Collection("projects")
+	projectFindResult := projectCollection.FindOne(context.Background(), bson.M{"id": projectId})
+
+	var project *entity.Project
+	projectErr := projectFindResult.Decode(&project)
+	avoidPanic(projectErr)
+
+	// get user
+	userCollection := ur.db.Database("taski").Collection("users")
+	userFindResult := userCollection.FindOne(context.Background(), bson.M{"id": userId})
+
+	var user *entity.User
+	userErr := userFindResult.Decode(&user)
+	avoidPanic(userErr)
+
+	// update project member
+	pushFileter := bson.M{"id": projectId}
+	push := bson.M{"$push": bson.M{"userIds": userId}}
+	_, updateErr := projectCollection.UpdateOne(context.Background(), pushFileter, push)
+	avoidPanic(updateErr)
+
+	return user, nil
 }

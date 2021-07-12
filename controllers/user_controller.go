@@ -59,9 +59,11 @@ func (ctl *userController) PostUser(ctx *gin.Context) {
 }
 
 func (ctl *userController) UpdateProjectMembers(ctx *gin.Context) {
-	// email := ctx.DefaultQuery("email", "")
+	projectId := ctx.Query("projectId")
+	userId := ctx.Query("userId")
 
-	// newUser, err := ctl.us.UpdateProjectMembers(email)
-	// AvoidPanic(err)
+	newUser, err := ctl.us.UpdateProjectMembers(projectId, userId)
+	AvoidPanic(err)
 
+	HTTPRes(ctx, http.StatusOK, "assign new user", newUser)
 }

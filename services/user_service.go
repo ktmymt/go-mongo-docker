@@ -8,6 +8,7 @@ import (
 type UserService interface {
 	GetOwnProjects(email string) (*entity.User, error)
 	CreateNewUser(user *entity.User) (*entity.User, error)
+	UpdateProjectMembers(projectId string, userId string) (*entity.User, error)
 }
 
 type userService struct {
@@ -26,4 +27,8 @@ func (us *userService) GetOwnProjects(id string) (*entity.User, error) {
 
 func (us *userService) CreateNewUser(user *entity.User) (*entity.User, error) {
 	return us.UserRepo.CreateNewUser(user)
+}
+
+func (us *userService) UpdateProjectMembers(projectId string, userId string) (*entity.User, error) {
+	return us.UserRepo.UpdateProjectMembers(projectId, userId)
 }
