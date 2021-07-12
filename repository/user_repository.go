@@ -154,7 +154,7 @@ func (ur *userRepository) UpdateProjectMembers(projectId string, userId string) 
 
 	// update project member
 	pushFileter := bson.M{"id": projectId}
-	push := bson.M{"$push": bson.M{"userIds": userId}}
+	push := bson.M{"$push": bson.M{"userIds": user.Id}}
 	_, updateErr := projectCollection.UpdateOne(context.Background(), pushFileter, push)
 	avoidPanic(updateErr)
 
