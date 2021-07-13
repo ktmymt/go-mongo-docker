@@ -79,8 +79,9 @@ func (p *projectRepository) CreateProject(project *entity.Project) (*entity.Proj
 
 	collection := p.db.Database("taski").Collection("projects")
 
+	var userIds [0]primitive.ObjectID
 	insert := bson.D{
-		{Key: "userIds", Value: project.UserIds},
+		{Key: "userIds", Value: userIds},
 		{Key: "name", Value: project.Name},
 		{Key: "description", Value: project.Description},
 		{Key: "todos", Value: project.Todos},
