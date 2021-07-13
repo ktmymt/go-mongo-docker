@@ -95,8 +95,9 @@ func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error)
 
 	collection := ur.db.Database("taski").Collection("users")
 
+	var userProject [0]primitive.ObjectID
 	insert := bson.D{
-		{Key: "project", Value: user.Project},
+		{Key: "project", Value: userProject},
 		{Key: "username", Value: user.Username},
 		{Key: "email", Value: user.Email},
 		{Key: "image", Value: user.Image},
