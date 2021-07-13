@@ -136,7 +136,7 @@ func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error)
 	}
 }
 
-func (ur *userRepository) UpdateProjectMembers(projectId string, userId string) (*entity.User, error) {
+func (ur *userRepository) UpdateProjectMembers(projectId string, userEmail string) (*entity.User, error) {
 	// get project
 	projectCollection := ur.db.Database("taski").Collection("projects")
 	projectFindResult := projectCollection.FindOne(context.Background(), bson.M{"id": projectId})
@@ -147,7 +147,7 @@ func (ur *userRepository) UpdateProjectMembers(projectId string, userId string) 
 
 	// get user
 	userCollection := ur.db.Database("taski").Collection("users")
-	userFindResult := userCollection.FindOne(context.Background(), bson.M{"id": userId})
+	userFindResult := userCollection.FindOne(context.Background(), bson.M{"email": userEmail})
 
 	var user *entity.User
 	userErr := userFindResult.Decode(&user)
