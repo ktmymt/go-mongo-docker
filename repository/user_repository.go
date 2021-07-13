@@ -131,7 +131,7 @@ func (ur *userRepository) CreateNewUser(user *entity.User) (*entity.User, error)
 
 		return newUser, nil
 	} else {
-		return user, nil
+		return duplicatedUser, nil
 	}
 }
 
