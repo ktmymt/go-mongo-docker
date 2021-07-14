@@ -151,7 +151,9 @@ func (ur *userRepository) UpdateProjectMembers(projectId string, userEmail strin
 
 	var user *entity.User
 	userErr := userFindResult.Decode(&user)
-	avoidPanic(userErr)
+	if userErr != nil {
+		return nil, bson.ErrDecodeToNil
+	}
 
 	// duplication validation
 	for _, eachUser := range project.UserIds {

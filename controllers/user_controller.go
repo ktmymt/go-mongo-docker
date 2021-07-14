@@ -63,7 +63,10 @@ func (ctl *userController) UpdateProjectMembers(ctx *gin.Context) {
 	userEmail := ctx.Query("userEmail")
 
 	newUser, err := ctl.us.UpdateProjectMembers(projectId, userEmail)
-	AvoidPanic(err)
+	if err != nil {
+		HTTPRes(ctx, http.StatusBadRequest, "user not fount", nil)
+		return
+	}
 
 	HTTPRes(ctx, http.StatusOK, "assign new user", newUser)
 }
