@@ -64,7 +64,7 @@ func (ctl *userController) UpdateProjectMembers(ctx *gin.Context) {
 
 	newUser, err := ctl.us.UpdateProjectMembers(projectId, userEmail)
 	if err != nil {
-		HTTPRes(ctx, http.StatusBadRequest, "user not fount", nil)
+		HTTPRes(ctx, http.StatusBadRequest, "user not found", nil)
 		return
 	}
 
