@@ -83,6 +83,17 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 	decodedUpdateResult := updateResult.Decode(&newTodo)
 	avoidPanic(decodedUpdateResult)
 
+	// update UpdatedAt in Project
+	projectCollection := t.db.Database("taski").Collection("projects")
+	projectFilter := bson.M{"_id": todo.ProjectId}
+	projectUpdate := bson.M{
+		"$set": bson.M{
+			"updatedAt": time.Now(),
+		}}
+
+	_, projectUpdateErr := projectCollection.UpdateOne(ctx, projectFilter, projectUpdate)
+	avoidPanic(projectUpdateErr)
+
 	return newTodo, nil
 }
 
