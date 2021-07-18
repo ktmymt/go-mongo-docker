@@ -42,6 +42,18 @@ func (ur *userRepository) GetOwnProjects(id string) (*entity.User, error) {
 	err := userFindResult.Decode(&user)
 	avoidPanic(err)
 
+	// get other users
+	otherUsers, err := userCollection.Find(context.Background(), bson.D{})
+	avoidPanic(err)
+
+	var projectMembers []*entity.User
+	for otherUsers.Next(context.Background()) {
+		var projectMember *entity.User
+		err := otherUsers.Decode(&projectMember)
+		avoidPanic(err)
+		projectMembers = append(projectMembers, projectMember)
+	}
+
 	// get projects
 	projectCollection := ur.db.Database("taski").Collection("projects")
 	projectFilter := options.Find()
@@ -70,6 +82,7 @@ func (ur *userRepository) GetOwnProjects(id string) (*entity.User, error) {
 		todos = append(todos, todo)
 	}
 
+	// include todos in project
 	for _, project := range projects {
 		for _, todo := range todos {
 			if project.Id == todo.ProjectId {
@@ -78,6 +91,18 @@ func (ur *userRepository) GetOwnProjects(id string) (*entity.User, error) {
 		}
 	}
 
+	// include project members in project
+	for _, project := range projects {
+		for _, projectMemberId := range project.UserIds {
+			for _, member := range projectMembers {
+				if projectMemberId == member.Id {
+					project.User = append(project.User, *member)
+				}
+			}
+		}
+	}
+
+	// include projects in user
 	for _, project := range projects {
 		for _, userId := range project.UserIds {
 			if user.Id == userId {
