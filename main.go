@@ -73,7 +73,7 @@ func main() {
 	// Setup routers for "TODO"
 	r.GET("/api/todos/:id", todoCtl.GetTodos)
 	r.POST("/api/todo", todoCtl.PostTodo)
-	r.PUT("/api/updTodo/:id", todoCtl.UpdateTodo)
+	r.PUT("/api/updTodo/", todoCtl.UpdateTodo)
 	r.DELETE("/api/delTodo/:id", todoCtl.DeleteTodo)
 
 	r.Run()
