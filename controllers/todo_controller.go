@@ -99,7 +99,7 @@ func (ctl *todoController) DeleteTodo(c *gin.Context) {
 		return
 	}
 
-	if _, err := ctl.ts.DeleteTodo(&delTodo, c.Param("id")); err != nil {
+	if _, err := ctl.ts.DeleteTodo(&delTodo); err != nil {
 		HTTPRes(c, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
