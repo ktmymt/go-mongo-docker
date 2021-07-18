@@ -83,16 +83,7 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 	decodedUpdateResult := updateResult.Decode(&newTodo)
 	avoidPanic(decodedUpdateResult)
 
-	// update UpdatedAt in Project
-	projectCollection := t.db.Database("taski").Collection("projects")
-	projectFilter := bson.M{"_id": todo.ProjectId}
-	projectUpdate := bson.M{
-		"$set": bson.M{
-			"updatedAt": time.Now(),
-		}}
-
-	_, projectUpdateErr := projectCollection.UpdateOne(ctx, projectFilter, projectUpdate)
-	avoidPanic(projectUpdateErr)
+	updateNewUpdatedAtInProject(t, todo, ctx)
 
 	return newTodo, nil
 }
@@ -116,13 +107,7 @@ func (t *TodoRepository) UpdateTodo(todo *entity.Todo) (*mongo.UpdateResult, err
 	result, err := collection.UpdateOne(ctx, filter, update)
 	avoidPanic(err)
 
-	// update UpdatedAt in Project
-	projectCollection := t.db.Database("taski").Collection("projects")
-	projectFilter := bson.M{"_id": todo.ProjectId}
-	projectUpdate := bson.M{"$set": bson.M{"updatedAt": time.Now()}}
-
-	_, projectUpdateErr := projectCollection.UpdateOne(ctx, projectFilter, projectUpdate)
-	avoidPanic(projectUpdateErr)
+	updateNewUpdatedAtInProject(t, todo, ctx)
 
 	return result, nil
 }
@@ -137,13 +122,17 @@ func (t *TodoRepository) DeleteTodo(todo *entity.Todo) (*mongo.DeleteResult, err
 	result, err := collection.DeleteOne(ctx, filter)
 	avoidPanic(err)
 
-	// update UpdatedAt in Project
+	updateNewUpdatedAtInProject(t, todo, ctx)
+
+	return result, nil
+}
+
+// update UpdatedAt in Project
+func updateNewUpdatedAtInProject(t *TodoRepository, todo *entity.Todo, ctx context.Context) {
 	projectCollection := t.db.Database("taski").Collection("projects")
 	projectFilter := bson.M{"_id": todo.ProjectId}
 	projectUpdate := bson.M{"$set": bson.M{"updatedAt": time.Now()}}
 
 	_, projectUpdateErr := projectCollection.UpdateOne(ctx, projectFilter, projectUpdate)
 	avoidPanic(projectUpdateErr)
-
-	return result, nil
 }
