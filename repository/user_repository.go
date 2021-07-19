@@ -96,7 +96,7 @@ func (ur *userRepository) GetOwnProjects(id string) (*entity.User, error) {
 		for _, projectMemberId := range project.UserIds {
 			for _, member := range projectMembers {
 				if projectMemberId == member.Id && projectMemberId != convertToObjectId(id) {
-					project.User = append(project.User, *member)
+					project.Users = append(project.Users, *member)
 				}
 			}
 		}

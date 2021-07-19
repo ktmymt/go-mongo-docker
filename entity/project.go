@@ -12,7 +12,7 @@ import (
 type Project struct {
 	Id          primitive.ObjectID   `bson:"_id" json:"id,omitempty"`
 	UserIds     []primitive.ObjectID `json:"userIds"`
-	User        []User               `json:"user"`
+	Users       []User               `json:"users"`
 	Name        string               `json:"name"`
 	Description string               `json:"description"`
 	Todos       []Todo               `json:"todos"`
