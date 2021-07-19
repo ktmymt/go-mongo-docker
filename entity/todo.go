@@ -25,9 +25,10 @@ type Todo struct {
 }
 
 func (todo *Todo) Validation(errors Errors, errorMessage ErrorMessage) Errors {
+	minTodoTitleLength := 0
 	maxTodoTitleLength := 40
 
-	if len(todo.Title) > maxTodoTitleLength {
+	if len(todo.Title) > maxTodoTitleLength || len(todo.Title) == minTodoTitleLength {
 		errorMessage.Name = "todoTitile"
 		errorMessage.Message = "Todo's title must be less than " + strconv.Itoa(maxTodoTitleLength) + "characters."
 		errors.Errors = append(errors.Errors, errorMessage)
