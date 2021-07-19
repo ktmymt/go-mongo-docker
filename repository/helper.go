@@ -11,7 +11,7 @@ func avoidPanic(err error) {
 	}
 }
 
-// convertToInt() converts string datum into int datum
+// convertToInt() converts string into ObjectID
 func convertToObjectId(datum string) primitive.ObjectID {
 	convertedDatum, err := primitive.ObjectIDFromHex(datum)
 	avoidPanic(err)

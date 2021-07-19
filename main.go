@@ -58,12 +58,11 @@ func main() {
 		})
 	})
 
-	/**
-	 * @summary: Setup routers for "User"
-	 * @usage  : send HTTP request in the form as following
-	 *         : /api/userProjects?email=myExample@email.com
-	 */
-	r.GET("/api/userProjects", userCont.GetOwnProjects)
+	// Setup routers for "User"
+	r.GET("/api/userProjects/:id", userCont.GetOwnProjects)
+	r.POST("/api/user", userCont.PostUser)
+	// /api/updMembers?projectId=&userEmail=
+	r.PUT("/api/updMembers", userCont.UpdateProjectMembers)
 
 	// Setup routers for "Project"
 	r.GET("/api/projects", projcetCont.GetProjects)
@@ -74,8 +73,8 @@ func main() {
 	// Setup routers for "TODO"
 	r.GET("/api/todos/:id", todoCtl.GetTodos)
 	r.POST("/api/todo", todoCtl.PostTodo)
-	r.PUT("/api/updTodo/:id", todoCtl.UpdateTodo)
-	r.DELETE("/api/delTodo/:id", todoCtl.DeleteTodo)
+	r.PUT("/api/updTodo/", todoCtl.UpdateTodo)
+	r.DELETE("/api/delTodo/", todoCtl.DeleteTodo)
 
 	r.Run()
 }
