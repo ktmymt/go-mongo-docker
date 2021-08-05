@@ -18,6 +18,7 @@ import (
 type Todo struct {
 	Id        primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 	ProjectId primitive.ObjectID `json:"projectId"`
+	UserId    primitive.ObjectID `json:"userId"`
 	Title     string             `json:"title"`
 	IsDone    bool               `json:"isDone"`
 	Status    string             `json:"status"`
