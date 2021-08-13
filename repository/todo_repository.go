@@ -58,6 +58,7 @@ func (t *TodoRepository) CreateTodo(todo *entity.Todo) (*entity.Todo, error) {
 
 	insert := bson.D{
 		{Key: "projectId", Value: todo.ProjectId},
+		{Key: "userId", Value: todo.UserId},
 		{Key: "title", Value: todo.Title},
 		{Key: "isDone", Value: todo.IsDone},
 		{Key: "status", Value: todo.Status},

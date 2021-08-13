@@ -18,6 +18,7 @@ import (
 type Todo struct {
 	Id        primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 	ProjectId primitive.ObjectID `json:"projectId"`
+	UserId    primitive.ObjectID `json:"userId"`
 	Title     string             `json:"title"`
 	IsDone    bool               `json:"isDone"`
 	Status    string             `json:"status"`
@@ -30,7 +31,7 @@ func (todo *Todo) Validation(errors Errors, errorMessage ErrorMessage) Errors {
 
 	if len(todo.Title) > maxTodoTitleLength || len(todo.Title) == minTodoTitleLength {
 		errorMessage.Name = "todoTitile"
-		errorMessage.Message = "Todo's title must be less than " + strconv.Itoa(maxTodoTitleLength) + "characters."
+		errorMessage.Message = "Todo's title must be more than " + strconv.Itoa(minTodoTitleLength) + "character or less than " + strconv.Itoa(maxTodoTitleLength) + "characters."
 		errors.Errors = append(errors.Errors, errorMessage)
 	}
 
